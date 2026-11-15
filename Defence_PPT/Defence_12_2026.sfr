@@ -1,0 +1,54 @@
+\bsfrestoresection{0}{3}
+\bsfrestore{0}{1}{0}{3}
+\begin{frame}{Laplacian Structure}\label{LapStruct}
+%\vspace{-1cm}
+\textbf{Network Under consideration}:  -- A chain/directed path with $N$ nodes adhering to topological ordering,\\  --A single reverse edge from node $y_1$ to node $x_1$ ($y_1>x_1$) so that the length of the directed cycle is $\ell=y_1-x_1$.\\
+\textbf{Consequence}: Under topological ordering, the Laplacian will have a lower triangular structure:
+%\begin{figure}
+%\centering
+\begin{columns}
+\begin{column}{0.28\textwidth}
+~~ \includegraphics[scale=0.3, keepaspectratio]{Images/WithLeader.eps}
+\end{column}
+\hspace*{-0.5cm}
+\begin{column}{0.22\textwidth}
+$\mathcal{L}=\begin{bmatrix}
+\mathcal{C} & & 0 \\
+& & \\
+* & & \mathcal{L}_2
+\end{bmatrix}$,
+\end{column}
+
+%\centering
+%\label{ChainLeader}
+%\textnormal{(a) Directed Cycle With Leader}
+%\end{minipage}
+% \hspace{0.5em}
+\begin{column}{0.28\textwidth}
+\includegraphics[scale=0.3, keepaspectratio]{Images/WithoutLeader.eps}
+\end{column}
+\begin{column}{0.22\textwidth}
+$\mathcal{L}=\begin{bmatrix}
+\mathcal{L}_1 & 0 & 0 \\
+* & \mathcal{C} & 0 \\
+* & * & \mathcal{L}_2
+\end{bmatrix}$
+\end{column}
+\end{columns}
+%\label{ChainWithoutLeader}
+%\textnormal{(b) Directed Cycle Without Leader}
+%$ \end{minipage}
+% \end{figure}
+where $\mathcal{L}_2 \in \mathbb{R}^{(N-y_1) \times (N-y_1)}$,~~ $\mathcal{L}_1 \in \mathbb{R}^{(x_1-1) \times (x_1-1)}$ and $\mathcal{C} \in \mathbb{R}^{(\ell+1) \times (\ell+1)}$.\\
+\vspace{0.2cm}
+\textbf{Case 1:} \textcolor{blue}{With Leader}, $x_1=1 \implies \mathcal{L}_1$ vanishes and $\mathcal{C} \in \mathbb{R}^{y_1 \times y_1}$ exists.\\
+\textbf{Case 2:} \textcolor{blue}{On second reverse edge addition, Laplacian structure remains the same}.\\
+%\centering
+$$\mathcal{L}_2 \in \mathbb{R}^{(N-z_2) \times (N-z_2)},~~\mathcal{L}_1 \in \mathbb{R}^{(z_1-1) \times (z_1-1)},~~\mathcal{C} \in \mathbb{R}^{(z_2-z_1+1) \times (z_2-z_1+1)}$$\\ where $z_1=\min(x_1,x_2),z_2=\max(y_1,y_2)$.\\
+\textbf{Case 3:} Any change in the \textcolor{blue}{$\gamma$ bound is reflected by change in spectra of matrix $\mathcal{C}$}.
+\hyperlink{BetterSuff}{\beamerbutton{Back}}
+\end{frame}
+
+\bsfrestoresection{1}{12}
+\bsfrestorepart{0}{14}
+\endinput

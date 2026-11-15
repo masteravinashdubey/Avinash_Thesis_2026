@@ -1,0 +1,465 @@
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\mode<presentation> {
+	
+	%\AtBeginSection[]{%
+		%	\begin{frame}<beamer>[noframenumbering]%
+			%		\frametitle{Outline}
+			%		\tableofcontents[currentsection,subsectionstyle=show/shaded/hide]%
+			%	\end{frame}%	
+		%}%
+	
+	
+	
+	% The Beamer class comes with a number of default slide themes
+	% which change the colors and layouts of slides. Below this is a list
+	% of all the themes, uncomment each in turn to see what they look like.
+	
+	%\usetheme{default}
+	%\usetheme{AnnArbor}
+	%\usetheme{Antibes}
+	%\usetheme{Bergen}
+	%\usetheme{Berkeley}
+	%\usetheme{Berlin}
+	%\usetheme{Boadilla}
+	%\usetheme{CambridgeUS}
+	%\usetheme{Copenhagen}
+	%\usetheme{Darmstadt}
+	%\usetheme{Dresden}
+	%\usetheme{Frankfurt}
+	%\usetheme{Goettingen}
+	%\usetheme{Hannover}
+	%\usetheme{Ilmenau}
+	%\usetheme{JuanLesPins}
+	%\usetheme{Luebeck}
+	\usetheme{Madrid}
+	%\usetheme{Malmoe}
+	%\usetheme{Marburg}
+	%\usetheme{Montpellier}
+	%\usetheme{PaloAlto}
+	%\usetheme{Pittsburgh}
+	%\usetheme{Rochester}
+	%\usetheme{Singapore}
+	%\usetheme{Szeged}
+	%\usetheme{Warsaw}
+	% As well as themes, the Beamer class has a number of color themes
+	% for any slide theme. Uncomment each of these in turn to see how it
+	% changes the colors of your current slide theme.
+	
+	%\usecolortheme{albatross}
+	%\usecolortheme{beaver}
+	%\usecolortheme{beetle}
+	%\usecolortheme{crane}
+	%\usecolortheme{dolphin}
+	%\usecolortheme{dove}
+	%\usecolortheme{fly}
+	%\usecolortheme{lily}
+	%\usecolortheme{orchid}
+	%\usecolortheme{rose}
+	%\usecolortheme{seagull}
+	%\usecolortheme{seahorse}
+	\usecolortheme{whale}
+	%\usecolortheme{wolverine}
+	
+	%\colorlet{beamer@blendedblue}{green!40!black}
+	
+	%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+	%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+	
+	%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+
+%\setbeamertemplate{footline}{%
+	%	\quad\hyperlinkpresentationstart{\beamerreturnbutton{Start}}%
+	%	\quad\hyperlinksectionstart{\beamerreturnbutton{Section start}}%
+	%\quad\hyperlink{moredetails}{\beamergotobutton{More details}}%
+	%	\quad\hyperlinksectionstartnext{\beamerskipbutton{Next section}}%
+	%\quad\hyperlinksectionstartprevious{\beamerskipbutton{Previous section}}%
+	%	\quad\hyperlinkpresentationend{\beamerskipbutton{End}}%
+	%	\vspace*{0.2cm}%
+	%}
+
+% Academic Color Palette
+\definecolor{iitbblue}{RGB}{12, 44, 96}       % Deep Navy / IIT Bombay Blue
+\definecolor{iitbgold}{RGB}{197, 155, 39}     % Muted Gold Accent
+\definecolor{darkslate}{RGB}{38, 50, 56}      % Charcoal Slate
+\definecolor{cardbg}{RGB}{246, 248, 250}      % Card/Block Background
+\definecolor{mathred}{RGB}{180, 40, 40}       % Math Alert Red
+\definecolor{mathgreen}{RGB}{34, 120, 60}     % Success Green
+
+\setbeamercolor{palette primary}{bg=iitbblue,fg=white}
+\setbeamercolor{palette secondary}{bg=darkslate,fg=white}
+\setbeamercolor{palette tertiary}{bg=iitbblue!90,fg=white}
+\setbeamercolor{structure}{fg=iitbblue}
+\setbeamercolor{titlelike}{parent=palette primary}
+\setbeamercolor{block title}{bg=iitbblue,fg=white}
+\setbeamercolor{block body}{bg=cardbg,fg=darkslate}
+\setbeamercolor{block title example}{bg=darkslate,fg=white}
+\setbeamercolor{block body example}{bg=cardbg,fg=darkslate}
+\setbeamercolor{alerted text}{fg=mathred}
+%\setbeamercolor{block body alerted}{bg=alerted text.fg!10}
+%\setbeamercolor{block title alerted}{bg=alerted text.fg!20}
+%\setbeamercolor{block body}{bg=structure!10}
+%\setbeamercolor{block title}{bg=structure!30}
+%\setbeamercolor{block body example}{bg=green!10}
+%\setbeamercolor{block title example}{bg=green!20}
+
+\setbeamercovered{invisible}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{headline}{}
+
+% Comprehensive Custom Footline
+\setbeamertemplate{footline}{
+	\leavevmode%
+	\hbox{%
+		\begin{beamercolorbox}[wd=.30\paperwidth,ht=2.5ex,dp=1.1ex,left,leftskip=2ex]{author in head/foot}%
+			\usebeamerfont{author in head/foot}\insertshortauthor~~\tiny(Roll: 184076010)
+		\end{beamercolorbox}%
+		\begin{beamercolorbox}[wd=.45\paperwidth,ht=2.5ex,dp=1.1ex,center]{title in head/foot}%
+			\usebeamerfont{title in head/foot}\insertshorttitle
+		\end{beamercolorbox}%
+		\begin{beamercolorbox}[wd=.25\paperwidth,ht=2.5ex,dp=1.1ex,right,rightskip=2ex]{date in head/foot}%
+			\insertshortdate{}\hspace*{1.5em}
+			\textbf{\insertframenumber{}} / \inserttotalframenumber
+	\end{beamercolorbox}}%
+	\vskip0pt%
+}
+
+
+
+
+
+
+
+
+
+
+%\usepackage{etex}
+\usepackage{lmodern}
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{ dsfont }
+\usepackage{dirtytalk}
+\usepackage{array}
+\usepackage{amssymb,amsmath}
+\usepackage{mathrsfs}
+\usepackage{ upgreek }
+\usepackage{graphicx,graphics}%,floatflt}
+\usepackage{exscale,cmmib57}
+\usepackage{circuitikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.5}
+\usepackage{siunitx}
+\usepackage{scalefnt}
+\usepackage{tkz-graph}
+\usetikzlibrary{arrows}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{transparent}
+\usepackage{epsfig}
+\usepackage{bbm}
+\usepackage{mathtools}
+\usepackage{color}
+\let\stdcaption\caption
+\usepackage{float}
+\usepackage{amsthm}
+\let\caption\stdcaption
+\usepackage{enumerate}
+\usepackage[]{comment}
+\usepackage{subfig}
+\usepackage{mathptmx}
+\usepackage{nicematrix}
+\usepackage[most]{tcolorbox}
+\usepackage{ragged2e}
+\usepackage{appendixnumberbeamer}
+\usepackage[append]{beamersubframe}
+\usepackage{epsfig}
+\usepackage{epstopdf} %converting to PDF
+
+
+\newcommand{\F}{\mathscr{F}}
+\newcommand{\bv}{\boldsymbol{v}}
+\newcommand{\Fold}{F_{\rm old}}
+\newcommand{\Fnew}{F_{\rm new}}
+\newcommand\norm[1]{\left\lVert#1\right\rVert}
+\newcommand{\Bfull}{\ensuremath{\mathfrak{B}_{\rm full}} }
+\newcommand{\diag} {{\rm diag}\ }
+\newcommand{\Lwcont}{\mathfrak{L}^{\w}_{\mathrm {cont}}}
+\newcommand{\Lpcont}{\ensuremath{\mathfrak{L}^{2\p}_{\mathrm {cont}}}}
+\newcommand{\Bp}{\B_{\tt adj}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}} }
+\newcommand{\Nat}{\ensuremath{\mathbb{N}} }
+\newcommand{\Q}{\ensuremath{\mathcal{M}}}
+\newcommand{\f}{\ensuremath{\tt{f}}}
+\newcommand{\Rr}{\ensuremath{\mathfrak{R}}}
+\newcommand{\I}{\ensuremath{\mathbb{I}}}
+\newcommand{\BH}{\B_\text{\rm Ham}}
+\newcommand{\Cimp}{\ensuremath{\mathfrak{C}_{\tt imp}}}
+\newcommand{\Cont}{{\mathcal{C}}}
+\newcommand{\Cs}{\mathcal{C}_K}
+\newcommand{\Lw}{{\mathfrak{L}^{\tt w}}}
+\newcommand{\bullettop}[1]{\overset{\bullet}{#1}}
+\newcommand{\cir}{{\rm circ}}
+\newcommand{\col}{{\rm col}}
+\renewcommand{\a}{\mathfrak{a}}
+\newcommand{\A}{\mathbb{A}}
+\newcommand{\w}{\tt{w}}
+\newcommand{\n}{{\tt{n}}}
+\newcommand{\ts}{{\tt{t}}}
+\newcommand{\N}{\tt{N}}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\m}{\tt{m}}
+\newcommand{\dd}{{\tt{d}}}
+\newcommand{\nf}{{\tt{n_f}}}
+\newcommand{\ns}{{\tt{n_s}}}
+\newcommand{\p}{\tt{p}}
+\newcommand{\q}{\tt{q}}
+\renewcommand{\r}{\tt{r}}
+\newcommand{\z}{\zeta}
+\newcommand{\e}{\eta}
+\newcommand{\ct}{\tt{c}}
+\newcommand{\kt}{\tt{k}}
+\newcommand{\at}{\tt{a}}
+\newcommand{\bz}{{\bf 0}}
+\newcommand{\Rn}{\R^{\n}}
+\newcommand{\Rw}{\R^{\w}}
+\newcommand{\Rx}{\R[\xi]}
+\newcommand{\Rp}{\R^{\p}}
+\newcommand{\Rm}{\R^{\m}}
+\newcommand{\RN}{\R^{\N}}
+\newcommand{\RM}{\R^{\M}}
+\newcommand{\Cn}{\C^{\n}}
+\newcommand{\Rnn}{\R^{\n\times \n}}
+\newcommand{\Rpp}{\R^{\p\times \p}}
+\newcommand{\Rrr}{\R^{\r\times \r}}
+\newcommand{\Rpn}{\R^{\p\times \n}}
+\newcommand{\Cnn}{\C^{\n \times \n}}
+\newcommand{\Rnp}{\R^{\n \times \p}}
+\newcommand{\Rmn}{\R^{\m \times \n}}
+\newcommand{\Rmm}{\R^{\m \times \m}}
+\newcommand{\Rnm}{\R^{\n \times \m}}
+\newcommand{\RNN}{\R^{\N \times \N}}
+\newcommand{\vectX}{\mathbf{X}}
+\newcommand{\vectY}{\mathbf{Y}}
+\newcommand{\zb}{\ensuremath{z_b}}
+\newcommand{\Zb}{\ensuremath{Z_b}}
+\newcommand{\tPhi}{\tilde{\Phi}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\zr}{{\bf 0}_r}
+\newcommand{\zc}{{\bf 0}_c}
+\newcommand{\zer}{{\bf 0}}
+\newcommand{\one}{{\bf 1}}
+\newcommand{\bX}{\mathcal{J}}
+\newcommand{\bY}{{\bf Y}}
+\newcommand{\bZ}{{\bf Z}}
+\newcommand{\phmin}{\hphantom{-}}
+\newcommand{\bigo}{\mathcal{O}}
+\newcommand{\pr}{\mathfrak{p}}
+\newcommand{\ed}{{\pmb{./}}}
+\newcommand{\multidegree}{\mbox{d}}
+\renewcommand{\H}{\mathcal{H}}
+\renewcommand{\L}{\mathcal{L}}
+\newcommand{\tL}{\L_M}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\baselinestretch}{1}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\W}{\mathcal{W}}
+\renewcommand{\t}{\rm r}
+\newcommand{\Rea}{\mathcal{R}_s}
+\newcommand{\Obs}{\mathcal{O}_w}
+\newcommand{\Obsg}{\mathcal{O}_{wg}}
+\renewcommand{\o}{\omega}
+\newcommand{\Lloc}{{\mathfrak{L}}^{\mathrm{\rm loc}}_{1}}
+\newcommand{\tA}{\widehat{A}}
+\newcommand{\tB}{\widehat{B}}
+\newcommand{\tC}{\widehat{C}}
+\newcommand{\tD}{\widehat{D}}
+\newcommand{\wA}{A_{r}}
+\newcommand{\wQ}{Q_{r}}
+\newcommand{\wC}{C_{r}}
+\newcommand{\wB}{B_{r}}
+\renewcommand{\l}{\lambda}
+\newcommand{\multiset}{multiset}
+\newcommand{\bx}{\bar{x}}
+\newcommand{\bu}{\bar{u}}
+\newcommand{\Km}{K_{\tt min}}
+\newcommand{\Kp}{K_{\tt max}}
+\newcommand{\Fm}{F_-}
+\newcommand{\Fp}{F_+}
+\newcommand{\dnum}{{\tt degnum}}
+\newcommand{\rnum}{{\tt rootnum}}
+\newcommand{\ddet}{{\tt degdet}}
+\newcommand{\wH}{H_{\r}}
+\newcommand{\wE}{{E_{\r}}}
+\newcommand{\wR}{\widehat{R}}
+\newcommand{\tAr}{A_{\r}}
+\newcommand{\tBr}{B_{\r}}
+\newcommand{\tCr}{C_{\r}}
+\newcommand{\tE}{\widehat{E}}
+\newcommand{\tH}{\widehat{H}}
+\newcommand{\Ts}{\Theta^*_{\tt n,m}}
+\newcommand{\T}{\Theta_{\tt n,m}}
+\renewcommand{\Z}{\mathcal{Z}}
+\newcommand{\g}{\tt{g}}
+\newcommand{\wg}{\widehat{\gamma}}
+\renewcommand{\z}{\zeta}
+\newcommand{\wz}{\widehat{\zeta}}
+\renewcommand{\z}{{z}}
+\newcommand{\zs}{{\z}^*}
+\newcommand{\qTs}{\Theta^*_{\tt n,m, r}}
+\newcommand{\qT}{\Theta_{\tt n,m, r}}
+\newcommand{\wM}{\widetilde{L}}
+\newcommand{\qE}{E_{\q}}
+\newcommand{\qH}{H_{\q}}
+\newcommand{\Pset}{\mathscr{P}_{{\n},{\m}}}
+\newcommand{\Nset}{\mathscr{N}}
+\newcommand{\Next}{\Nset_{\tt ext}}
+\newcommand{\RK}{\mathcal{R}(K)}
+\newcommand{\RKs}{\mathcal{R}(K_o)}
+\newcommand{\LK}{\mathcal{L}(K)}
+\newcommand{\LKs}{\mathcal{L}(K_{{\tt max}})}
+\newcommand{\FK}{\mathcal{F}(K)}
+\newcommand{\FKs}{\mathcal{F}(K_o)}
+\newcommand{\LKreg}{\mathcal{L}_{\tt t}(K)}
+\newcommand{\LKregs}{\mathcal{L}_{\tt t}(K_o)}
+\newcommand{\nrnk}{{\tt nrank}}
+\newcommand{\ddt}{\frac{d}{dt}}
+\newcommand{\B}{\mathfrak{B}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\ttwe}{\emph{\texttt{w}}}
+\newcommand{\Cinf}[2]{\mathfrak{C}^\infty\left(\R^{#1},\R^{#2}\right)}
+\newcommand{\D}[1]{\mathfrak{D}\left(\R^\ttn,\C^{#1}\right)}
+\newcommand{\letree}{\mathcal{L}_{e_{\tau}}}
+\newcommand{\letreein}{\mathcal{L}_{e_{\tau_{in}}}}
+\newcommand{\lntree}{\mathcal{L}_{n_{\tau}}}
+\newcommand{\lntreein}{\mathcal{L}_{n_{\tau_{in}}}}
+\newcommand{\etree}{E_{\tau}}
+\newcommand{\etreein}{E_{\tau_{in}}}
+%Theorem definitions
+\newtheorem{thrm}{Theorem}[section]
+\newtheorem{lem}[thrm]{Lemma}
+\newtheorem{prp}[thrm]{Proposition}
+\newtheorem{defn}[thrm]{Definition}
+\newtheorem{rmk}[thrm]{Remark}
+\newtheorem{ex}[thrm]{Example}
+\newtheorem{algo}[thrm]{Algorithm}
+\newtheorem{cor}[thrm]{Corollary}
+\swapnumbers % optional, of course
+\newtheorem{thm}{Theorem}[section]
+%\newtheorem{problem}[thrm]{\bfseries Problem}
+\theoremstyle{remark} % just in case the style had changed
+\newcommand{\thistheoremname}{}
+\newtheorem{genericthm}[thm]{\thistheoremname}
+\newenvironment{problemEN}{\begin{problem}\em}{\em\\\end{problem}}
+\newenvironment{namedthm}[1]
+{\renewcommand{\thistheoremname}{#1}%
+\begin{genericthm}}
+{\end{genericthm}}
+\setbeamerfont{footnote}{size=\tiny}
+\newcommand{\BT}{\noindent \begin{thrm}}
+\newcommand{\ET}{\end{thrm}}
+\newcommand{\BPP}{\noindent \begin{prp}}
+\newcommand{\EPP}{\end{prp}}
+\newcommand{\BD}{\begin{defn}}
+\newcommand{\ED}{\end{defn}}
+\newtheorem{defi}{Definition}
+\newenvironment<>{myblock}[1]{%
+\setbeamercolor{block title}{fg=white,bg=blue!75!black}%
+\setbeamercolor{block body}{fg=black,bg=blue!10!white}
+\begin{block}#2{#1}}{\end{block}}
+%\newcommand{\BP}{{\noindent \em Proof : }}
+%\newcommand{\BPref}[1]{{\noindent \em Proof of #1: }}
+%\newcommand{\EP}{\hspace*{\fill} {\boldmath $\square$ } \bigskip }
+%\newenvironment{proof}[1][Proof]
+\setbeamertemplate{navigation symbols}{}
+
+
+\makeatletter
+%\renewcommand{\footnoterule}{}
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Ph.D. Defence]{Analysis \& Synthesis of Networked Dynamical Systems: \\
+	  Stability, Performance and Applications of Consensus} % The short title
+\subtitle{Ph.D. Thesis Defence}
+\author[Avinash Dubey]{%
+	\textbf{Avinash Kumar Dubey}\\
+	Roll No.: 184076010 \\[0.15cm]
+}
+\institute[IIT Bombay]{%
+	Department of Electrical Engineering\\
+	\textbf{Indian Institute of Technology Bombay}\\[1ex]
+	\textit{Supervisor:} \textbf{Prof. Dwaipayan Mukherjee}
+}
+\date[December 2026]{December 7, 2026}
+% Your name
+% Date, can be changed to a custom date
+%\vspace{-0.3cm}
+\begin{document}
+	
+\begin{frame}[noframenumbering,plain]
+	\titlepage
+	\vspace{-0.5cm}
+	\begin{center}
+	\includegraphics[scale=0.15]{iitb_logo2.jpg}	
+	\end{center}	
+\end{frame}
+
+%----------------------------------------------------------------------------------------	
+\begin{frame}[plain,noframenumbering]
+	\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+	\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+\include{Motivation}
+%\include{Second_Cycle}
+%\include{Consensus}
+%\include{H2_Analysis}
+%\include{Pursuit_Evasion}
+%\include{Spiral}
+%----------------------------------------------------------------------------------------
+
+% \include{Containment_Control}
+
+
+\section*{Publications}
+\begin{frame}{Work Summary}
+	\begin{block}{1. Guaranteed Consensus in network of the Double Integrator Agents in presence of directed cycles}
+		\begin{enumerate}
+			\item Dubey, A. K., Mukherjee, D., \& Arya, K. (2023, May). Consensus of double integrators in presence of a reverse edge in a chain: Analysis and design. In 2023 American Control Conference (ACC) (pp. 411-416). IEEE.
+			\item Dubey, A. K. \& Mukherjee, D. Guaranteed Consensus in System of Double Integrators in Presence of Directed Cycles [to be communicated]
+		\end{enumerate}
+	\end{block}
+	\begin{block}{2. Effect of Reverse Edges on Consensus and $\mathcal{H}_2$ performance of a networked dynamical system }
+		\begin{enumerate}
+			\item Dubey, A. K., Mukherjee, D., \& Arya, K. (2022). Consensus of double integrators over a chain with reverse edges. IFAC-PapersOnLine, 55(13), 19-24.
+			\item Dubey, A. K. \& Mukherjee, D. On $\mathcal{H}_2$ performance of a network of double integrators in presence of cycles [to be communicated]
+		\end{enumerate}
+	\end{block}
+\end{frame}
+\begin{frame}{Work Summary Contd.}
+\begin{block}{3. Guidance Law for Intercepting Stationary target under Terminal Constraints}
+	\begin{enumerate}
+		\item Dubey, A. K., Mukherjee, D., \& Kumar, S. R. (2024, June). Trajectory Planning Using Dubins-Like Paths with Approach Angle and Terminal Time Constraints. In 2024 32nd Mediterranean Conference on Control and Automation (MED) (pp. 412-417). IEEE.
+		\item Dubey, A. K., Mukherjee, D., \& Kumar, S. R. Spirals based Multi-Agent Guidance for Coordinated Spatial Interception [Under Preparation]
+	\end{enumerate}
+\end{block}
+\centering
+\Huge{Thank You!!}
+\end{frame}
+
+
+\appendix
+\appendsubframes
+
+
+\end{document} 

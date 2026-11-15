@@ -1,0 +1,601 @@
+
+%\appendix
+\subsection*{Containment Control in 3-D space}\label{Containment}
+\begin{frame}{Containment of Double Integrators in 3D Space~~\hyperlink{Conc3DContainment}{\beamerbutton{Conclusion-3D}}~~\hyperlink{2DContainment}{\beamerbutton{PPT-2D}}}\label{3DContainment}
+	%\vspace{-0.2cm}
+	\begin{block}{}
+		\begin{columns}
+			\begin{column}{0.7\textwidth}
+		~- Swarm of agents/drones are in 3D space.\\
+		~- Trajectory to traverse known to selected few (\textcolor{blue}{Leaders})\\
+		~- \textcolor{red}{Objective:} Plan trajectories for other agents such that they always remains inside the convex hull of the leaders.\\
+		%\vspace{-0.2cm}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+		\begin{figure} 
+			\centering
+			\includegraphics[scale=0.2,keepaspectratio]{Swarm.png}
+			%\caption{Swarm of drones following the trajectory defined by the leader drones}
+			\label{Swarm}
+		\end{figure}
+		\end{column}
+		\end{columns}
+	\end{block}
+	%\vspace{-0.2cm}
+	\begin{block}{}
+		- Leader Set:  $\mathcal{M}=\{1,2,\dots,M\}$,~~ Follower Set:  $\mathcal{N}=\{M+1,M+2,\dots, M+N\}$ \\
+		- Position of Leaders and followers: $p_{i}(t), i \in \mathcal{M}\cup \mathcal{N}$ at time $t$\\
+		- Convex hull of the leaders at any given time $t$ is defined by:
+		\vspace{-0.3cm}
+		$$co_{L}(t)=co\{p_{1}(t),\dots,p_{M}(t)\}=\sum_{i} \sigma_{i}p_{i}(t)|\sum_{i }\sigma_{i}=1, \sigma_{i}\geq 0, i \in \mathcal{M}$$
+		\vspace{-0.3cm}
+		- Containment Solution:$$\lim_{t\to\infty} \text{dis}(p_{i}(t),co_{L}(t))=0,i\in \mathcal{N}$$
+	\end{block}
+\end{frame}
+\begin{frame}
+	\vspace*{-0.3cm}
+	\begin{block}{Assumptions}
+		\begin{enumerate}
+			\item Followers have the relative information only from their neighborhood.
+			\item Either there exists a directed edge from any of the leaders to all but one follower, or some indirect path from one of the leaders to each follower. %In the second case, the topology among followers is \emph{strongly connected}.
+			\item There exist a topological ordering.
+		\end{enumerate}
+	\end{block}
+	\vspace*{-0.2cm}
+	\begin{block}{Proposition 1\footnotemark[1]}
+		The graph Laplacian with $M$ leaders and $N$ followers of the graph $\mathcal{G}$ is written as %~\footnotemark[1]
+		$
+			\mathcal{L}_{\mathcal{G}}=
+			\begin{bmatrix}
+				\boldsymbol{0} & \boldsymbol{0}\\
+				\mathcal{L}_{1} & \mathcal{L}_{2}
+			\end{bmatrix},
+		$
+		Under assumptions mentioned above:
+		\begin{enumerate}
+			\item All eigenvalues of $\mathcal{L}_{2}$ have positive real parts, thus validating the matrix to be invertible and hence $\mathcal{L}_{2}^{-1}$ exists.\textcolor{blue}{ (Important for invertibility of $\mathcal{L}_{2}$)}
+			\item Each entry of $-\mathcal{L}_{2}^{-1}\mathcal{L}_{1} \geq 0$ and the row sum of every row equals to $1$. \textcolor{blue}{(Elements of row corresponds to $\sigma_{i}$)}
+		\end{enumerate}
+		where $\mathcal{L}_{1} \in \mathbb{R}^{N \times M}$, $\mathcal{L}_{2} \in \mathbb{R}^{N \times N}$, while $\boldsymbol{0}$ is a matrix of all zero entries, of appropriate dimension.
+	\end{block}
+	\footnotetext[1]{\textcolor{blue}{Meng, Z., Ren, W., \& You, Z.}, {\em Distributed finite-time attitude containment control for multiple rigid bodies}, Automatica, 46(12) 2010.}
+	%\alt<2>{\let\thefootnote\relax\footnotetext{~}}{\footnotetext[1]{\textcolor{blue}{Meng, Z., Ren, W., \& You, Z.}, {\em Distributed finite-time attitude containment control for multiple rigid bodies}, Automatica, 46(12) 2010.}}
+\end{frame}
+
+\begin{frame}{}
+		\vspace{-0.5cm}
+	\begin{columns}
+		\begin{column}{0.45\textwidth}
+			\begin{block}{Leader's Dynamics}
+				- Leaders dynamics are controllable and observable\\
+				- Trajectory of $i^{th}$ leader is given by:
+				$$	p_{i}(t)=c_{0}^{i}+c_{1}^{i}t+\dots+c_{n}^{i}t^{n},$$
+				$\text{ where} \: i \in \mathcal{M},\: c_{j}^{i}\in \mathbb{R}^{3},\: j= 0,1,\dots,n$\\
+				- $(n+1)$ points required to generate trajectory.\\
+				- Leaders are considered as reference signals.
+			\end{block}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\begin{block}{Followers' Dynamics}
+				Motion dynamics of $i^{th}$ agent or the $(i-M)^{th}$ follower is given by:\\
+				\begin{center}
+					%\begin{equation}\label{Homodynamics}
+					$\dot{Z_i}(t)=A_iZ_{i}(t)+Bu_{i}(t)+\delta_{i}(t)$,\\
+					$y_i(t)=CZ_i(t)$
+				\end{center}
+				%\end{equation}
+				%\begin{equation}
+				%	y_i(t)=C_iZ_i(t)
+				%\end{equation}
+				Position and velocity of $(i-M)^{th}$ follower:
+				$$p_{i}(t)=[Z_{i}(1)(t)]^T,~ v_{i}(t)=[Z_{i}(2)(t)]^T\in \mathbb{R}^{3}$$
+			\end{block}
+		\end{column}
+	\end{columns}
+	\vspace*{0.2cm}
+	where $A_i=
+	\begin{bsmallmatrix}
+		0 & 1\\
+		\alpha_{i} & \beta_{i}
+	\end{bsmallmatrix}$
+	and $B=
+	\begin{bsmallmatrix}
+		0 \\ 1
+	\end{bsmallmatrix}$,
+	$C=
+	\begin{bsmallmatrix}
+		1 & 0
+	\end{bsmallmatrix}$,
+	$Z_{i} \in \mathbb{R}^{2}$, $u_i \in \mathbb{R}$. \\
+	$\delta_{i}(t)=d_{0}^{i}+d_{1}^{i}t+\dots+d_{r}^{i}t^{r},\: r\in \mathbb{N}, \: d_{j}^{i}\in \mathbb{R}^{2},\: j=0,1,\dots,r$ is the polynomial type disturbance.
+	\end{frame}
+	\begin{comment}
+	\begin{block}{Leader's Dynamics}
+		- Leaders dynamics are controllable and observable\\
+		- Trajectory of $i^{th}$ leader is given by:
+		$$	p_{i}(t)=c_{0}^{i}+c_{1}^{i}t+\dots+c_{n}^{i}t^{n},\text{ where} \: i \in \mathcal{M},\: c_{j}^{i}\in \mathbb{R}^{3},\: j= 0,1,\dots,n$$
+		- $(n+1)$ points required to generate trajectory.\\
+		- Leaders are considered as reference signals.
+	\end{block}
+	%\vspace{-0.1cm}
+	\begin{block}{Followers' Dynamics}
+		Motion dynamics of $i^{th}$ agent or the $(i-M)^{th}$ follower (second-order linear dynamics) is given by:\\
+		\begin{center}
+			%\begin{equation}\label{Homodynamics}
+			$\dot{Z_i}(t)=A_iZ_{i}(t)+Bu_{i}(t)+\delta_{i}(t)$,\\
+			$y_i(t)=CZ_i(t)$
+		\end{center}
+		%\end{equation}
+		%\begin{equation}
+		%	y_i(t)=C_iZ_i(t)
+		%\end{equation}
+		where $A_i=
+		\begin{bsmallmatrix}
+			0 & 1\\
+			\alpha_{i} & \beta_{i}
+		\end{bsmallmatrix}$
+		and $B=
+		\begin{bsmallmatrix}
+			0 \\ 1
+		\end{bsmallmatrix}$,
+		$C=
+		\begin{bsmallmatrix}
+			1 & 0
+		\end{bsmallmatrix}$,
+		$Z_{i} \in \mathbb{R}^{2}$, $u_i \in \mathbb{R}$. \\
+		$\delta_{i}(t)=d_{0}^{i}+d_{1}^{i}t+\dots+d_{r}^{i}t^{r},\: r\in \mathbb{N}, \: d_{j}^{i}\in \mathbb{R}^{2},\: j=0,1,\dots,r$ is the polynomial type disturbance.\\
+		The position and velocity of $(i-M)^{th}$ follower is given by
+		$$p_{i}(t)=[Z_{i}(1)(t)]^T,v_{i}(t)=[Z_{i}(2)(t)]^T\in \mathbb{R}^{3}$$
+	\end{block}	
+\end{comment}
+
+\begin{frame}{}
+	%\vspace{-0.1cm}
+	\begin{block}{Proposed Control Law}
+		$$  u_{i}(t)=\sum_{l=0}^{l_{m}-1}k_{l}\mathcal{D}^{1-l}\sum_{j \in \mathcal{M}\cup \mathcal{N}}\alpha_{ij} e_{ji}(t)$$
+		%\end{equation}
+		where $e_{ji}=p_j(t)-p_i(t)$ and $\mathcal{D}$ denotes the derivative operator.\\
+		- The above equation has \textcolor{blue}{one derivative term, one proportional term, and $l_{m}-2$ integral terms}.\\ 
+		- Since the order of the follower is assumed to be 2, therefore, $l_{m}=\max(2,n+1)$, where $n$ is the order of leader's trajectory.
+	\end{block}
+	%\vspace{-0.1cm}
+	%\textbf{Note: }{
+		\begin{block}{Agent's Dynamics Individually}
+			Let $\xi_{i}(t)=(p_{i}^{T}(t),p_{i}^{(1)T}(t),\dots, p_{i}^{(l_{m}-1)T}(t))^T$. Then dynamics of $i^{th}$ agent can be described by:\\
+			$~~~\color{cyan}{\dot{\xi_{i}}(t)=(E\otimes I_{3})\xi_{i}(t), \: \: i \in \mathcal{M}},~~~\color{brown}{\dot{\xi_{i}}(t)=(E \otimes I_{3})\xi_{i}(t)+(B \otimes I_{3}) \bar{u_{i}}(t)+\mathcal{D}^{l_{m}-2}\delta_{i}(t), \: \:  i \in \mathcal{N}}$\\
+			\vspace*{0.2cm}
+			where $E=\begin{bsmallmatrix}
+				0 & 1 & 0 & \dots & 0\\
+				0 & 0 & 1 & \dots & 0\\
+				\vdots & \vdots & \vdots & \vdots & \vdots\\
+				0 & 0 & 0 & \dots & 1 \\
+				0 & 0 & 0 & \dots & 0
+			\end{bsmallmatrix} \in \R^{(n+1) \times (n+1)},~~~
+			B=\begin{bsmallmatrix}0 \\ 0 \\ \vdots \\ 0 \\ 1 \end{bsmallmatrix} \in \R^{n+1},$\\
+			\vspace*{0.2cm}
+			$~~~\bar{u}_{i}=\mathcal{D}^{(l_m-2)}u_{i}(t)=\sum_{j}K(\xi_{j}(t)-\xi_{i}(t)), ~~~\: j \in \mathcal{M}\cup \mathcal{N}, ~~~\: K=\begin{bsmallmatrix}k_n & \dots & k_1 & k_0 \end{bsmallmatrix}$
+		\end{block}
+		
+	\end{frame}
+	\begin{frame}{Stacked Dynamics}%\label{BL}
+		\vspace{-0.2cm}
+		\begin{block}{}
+			Let $\Xi_L(t)= (\xi_1^T(t),\xi_2^T(t),\dots, \xi_M^T(t))^T$, then the Stacked Leaders' Dynamics are:
+			$$\boxed{\mathcal{D}\Xi_{L}(t)= (I_{M} \otimes E \otimes I_{3})\Xi_{L}(t)}$$
+			Let $\Xi_F(t)= (\xi_{M+1}^T(t), \xi_{M+2}^T(t), \dots, \xi_{M+N}^T(t))^T$ then the Stacked Followers' Dynamics are:
+			$$\boxed{\mathcal{D}\Xi_{F}(t)= (\mathcal{I}_{\mathcal{N}} \otimes E \otimes I_{p}-\mathcal{L}_2 \otimes BK \otimes I_{p}) \Xi_{F}(t) - (\mathcal{L}_1 \otimes BK \otimes I_{p}) \Xi_{L}(t)+ (I_{N} \otimes B \otimes I_{p}) \Delta(t)}$$
+			Taking $\hat{\Xi}_{F}(t)=\Xi_{F}(t)+(\mathcal{L}_2^{-1}\mathcal{L}_1 \otimes I_{(n+1)p})\Xi_{L}(t)$, we get 
+			%			\begin{equation}
+				$$\boxed{\mathcal{D}\hat{\Xi}_{F}(t)=(\mathcal{I}_{\mathcal{N}} \otimes E \otimes I_{p}-\mathcal{L}_2 \otimes BK \otimes I_{p})\hat{\Xi}_{F}(t)+(I_{N} \otimes B \otimes I_{p})\Delta(t)}$$
+				%			\end{equation}
+			where $\Delta(t)$ is the diagonal matrix with $(l_{m}-2)^{th}$ derivative of noise terms $\delta(t)$ in the diagonal.\\
+			$$\bar{u}_{i}=\mathcal{D}^{(l_m-2)} u_{i}(t)=\sum_{j}K(\xi_{j}(t)-\xi_{i}(t)), \:		j \in \mathcal{M}\cup \mathcal{N}, \: K=\begin{bsmallmatrix}k_n & \dots & k_1 & k_0 \end{bsmallmatrix}$$
+		\end{block}
+		\pause
+		%$H=(\mathcal{I}_{\mathcal{N}} \otimes E \otimes I_{p}-\mathcal{L}_2 \otimes BK \otimes I_{p})$,
+		%$P=(\mathcal{L}_1 \otimes BK \otimes I_{p})$,
+		%$L=(I_{N} \otimes B \otimes I_{p})$,\\
+		%$W=\mathcal{I}_{\mathcal{N}} \otimes E-\mathcal{L}_2\otimes BK$.
+		%\begin{alertblock}{Containment Solution}
+		%Solving for the containment problem is equivalent to ensuring that matrix $$\mathcal{I}_{\mathcal{N}} \otimes E \otimes I_{p}-\mathcal{L}_2 \otimes BK \otimes I_{p}$$ being hurwitz.
+		%\end{alertblock}
+		\textcolor{blue}{Containment Solution: }\\
+		- Ensure the matrix $(\mathcal{I}_{\mathcal{N}} \otimes E -\mathcal{L}_2 \otimes BK) \otimes I_{p} \implies $ \textcolor{red}{$ \mathcal{I}_{\mathcal{N}} \otimes E-\mathcal{L}_2 \otimes BK$ is Hurwitz.\\
+			- $\Delta(t)$ doesn't affect the dynamics}: achieved if noise is a polynomial of degree $(l_{m}-3)$\\
+		%If we assume that the noise is a polynomial of degree $(l_{m}-3)$, its effect can be nullified, because $(l_{m}-3)^{\text rd}$ derivative becomes 0.
+	\end{frame}
+	%\againframe<2>{base}
+	\begin{frame}{Recall}
+		\vspace{-0.2cm}
+		\begin{block}{}
+			- Graph Laplacian 
+			$\mathcal{L}_{\mathcal{G}}=
+			\begin{bmatrix}
+				\boldsymbol{0} & \boldsymbol{0}\\
+				\mathcal{L}_{1} & \mathcal{L}_{2}
+			\end{bmatrix}$\\
+			- Under topological ordering constraints $\mathcal{L}_2$ is lower triangular $ \implies (\mathcal{I}_{\mathcal{N}} \otimes E-\mathcal{L}_2 \otimes BK$) is also lower triangular block matrix.
+		\end{block}
+		\vspace*{-0.2cm}
+		%\alt<2>{\let\thefootnote\relax\footnotetext{~}}{\footnotetext[1]{\textcolor{blue}{Meng, Z., Ren, W., \& You, Z.}, {\em Distributed finite-time attitude containment control for multiple rigid bodies}, Automatica, 46(12) 2010.}}
+		\begin{exampleblock}{}
+			- Follower Dynamics is $$\dot{Z_i}(t)=A_iZ_{i}(t)+B_iu_{i}(t)+\delta_{i}(t)$$
+			where $A_i=
+			\begin{bsmallmatrix}
+				0 & 1\\
+				\alpha_{i} & \beta_{i}
+			\end{bsmallmatrix}, ~~~\:B=
+			\begin{bsmallmatrix}
+				0 \\ 1
+			\end{bsmallmatrix}$,\\
+			- \textcolor{blue}{Objective: }Stabilizing $N$ different polynomials of order $l_{m}$.\\
+			- Characteristic equation of $(i-M)^{\rm th}$ block of the matrix ($\mathcal{I}_{\mathcal{N}} \otimes E-\mathcal{L}_2 \otimes BK$) is given by:
+			$$\color{cyan}{s^{l_{m}}+(k_{0}\lambda_{i}-\beta_{i})s^{l_{m}-1} +(k_{1}\lambda_{i}-\alpha_{i})s^{l_{m}-2}}+\color{brown}{(k_{2}\lambda_{i})s^{l_{m}-3}+\dots+(k_{l_{m}-1}\lambda_{i})}=0,$$
+			$
+				\implies 1+ \frac{\color{brown}{k_{2}\lambda_{i}(s^{l_{m}-3}+\hat{k}_{3}s^{l_{m}-4}+\dots+\hat{k}_{l_{m}-1})}}{\color{cyan}{s^{l_{m}-2}(s^2 + (k_{0}\lambda_{i}-\beta_{i})s)+(k_{1}\lambda_{i}-\alpha_{i})}}=0,~~~
+			$ where, $\lambda_{i}$ is the $i^{th}$ eigenvalue of matrix $\mathcal{L}_2$\\
+		%	- Since $(2)$ is of $1+G(s)=0$ form, we can use root locus to solve the problem.
+		\end{exampleblock}
+	\end{frame}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{frame}{Algorithm}
+		$$1+G(s)= 1+ \frac{k_{2}\lambda_{i}(s^{l_{m}-3}+\hat{k}_{3}s^{l_{m}-4}+\dots+\hat{k}_{l_{m}-1})}{s^{l_{m}-2}(s^2 + (\lambda_{i}k_{0}-\beta_{i})s)+(\lambda_{i}k_{1}-\alpha_{i})}=0.$$
+		Challenge is to design single controller gain $K$, which stabilizes all the $M$ blocks.
+		\begin{block}{}
+			\begin{itemize}
+				\item First fix values of $k_{0}$ and $k_{1}$ such that the two closed loop poles which are not at origin are at left hand side of imaginary axis for all the N agents.
+				\item Fix elements of $[1, \hat{k}_{3},\dots, \hat{k}_{l_{m}-1}]$ such that all the $l_{m}-3$ zeros are on the right side of the original poles of the systems and left side of origin, such that the two branches of root loci going to right side of the imaginary plane have a portion inside the left side of imaginary axis. This is the range of gains for which system is stable.
+				\item Select a common gain that stabilizes all the $M$ blocks, and assign this value to $k_{2}$.
+				\item Now, we can calculate all other remaining gains in the matrix  $K$ from the numerator polynomial.
+			\end{itemize} 
+		\end{block}
+		%\begin{block}{Conclusion}
+		%	\begin{itemize}
+			%		\item Designed single controller for all the followers.
+			%		\item The proposed controllers not only works for heterogeneous followers but also when some of them have unstable dynamics.
+			%		\item The proposed controller also nullifies the effect of noise.
+			%	\end{itemize}
+		%\end{block}
+	\end{frame}
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{frame}{Experimental Setup: Homogeneous Stable System}
+		The leaders are assumed to follow a $5^{th}$ order polynomial trajectory, i.e., $n=5$ and $l_m=6$. Thus, the system can cancel out the effect of disturbances of order 3.
+		\begin{figure}
+			\centering
+			\begin{minipage}{0.4\linewidth}
+				\centering
+				\includegraphics[width=\textwidth]{homo_stable_topology.jpg}
+				\textnormal{(a). Topology for Homogeneous stable system}
+			\end{minipage}
+			\hspace{1em}
+			\begin{minipage}{0.5\linewidth}
+				%\centering
+				- Consider a multi-agent system of 8 agents where agents 1 to 4 are leaders and agents 5 through 8, as shown in Figure, are the followers. \\
+				- All the agents are assumed to be connected over an unweighted topology. \\
+				- The system is considered as homogeneous and individual agents are stable with system matrix given by
+				$$A=\begin{bmatrix}
+						0 & 1 \\
+						-10 & -20
+				\end{bmatrix}.
+				$$
+			\end{minipage}\\
+		\end{figure}
+	\end{frame}
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{frame}{Simulation Results: Homogeneous Stable System Root Locus}
+		\begin{figure}
+			\centering
+			%\begin{minipage}{0.6\linewidth}
+			%\centering
+			\includegraphics[scale=.25]{rlocus_stab_hom_1-4_final.eps}
+			\caption{Followers in Homogeneous stable system}
+			%\textnormal{(a). Rootlocus for }
+			%\end{minipage}
+			%\hspace{1em}
+			%\begin{minipage}{0.4\linewidth}
+			%\centering
+			%\textnormal{(b). Containment Path of followers in Homogeneous stable system}
+			%\end{minipage}
+		\end{figure}
+		The gain matrix $K=[0.63, 10.2, 55.31, 100, 100, 50]$
+	\end{frame}
+	\begin{frame}{Simulation Results: Homogeneous Stable System Path}
+		\begin{figure}
+			\includegraphics[scale=0.25]{path_stab_homo_final.eps}
+			\caption{Path of followers in Homogeneous stable system}
+		\end{figure}
+		The gain matrix $K=[0.63, 10.2, 55.31, 100, 100, 50]$
+	\end{frame}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{frame}{Experimental Setup: Homogeneous Unstable System}
+		\begin{figure}
+			\centering
+			\begin{minipage}{0.4\linewidth}
+				\centering
+				\includegraphics[width=0.8\textwidth]{unstable_topology.jpg}
+				\textnormal{(a). Topology for Homogeneous unstable system}
+			\end{minipage}
+			\hspace{1em}
+			\begin{minipage}{0.5\linewidth}
+				%\centering
+				- From the chosen topology, all the $\lambda's$ are identical and $\lambda=6$.\\ 
+				- $ A=\begin{bmatrix} 0 & 1 \\ 100 & 400 \end{bmatrix}.$\\
+				- Having identical $\lambda's$, need to stabilize only one root locus
+			\end{minipage}\\
+		\end{figure}
+	\end{frame}
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{frame}{Simulation Results: Homogeneous Unstable System}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.6\textwidth]{rlocus_unsta_homo_final.eps}
+			\caption{(a). Rootlocus for Homogeneous unstable system}
+			%\includegraphics[width=\textwidth]{path_unst_homo_final.eps}
+			%	\caption{(b). Containment Path in Homogeneous unstable system}
+		\end{figure}
+		The gain matrix for solving the containment problem is $$K=[10^8, 3 \times 10^7, 3\times 10^6, 10^5, 1683.3, 100]$$
+	\end{frame}
+	\begin{frame}{Simulation Results: Homogeneous Unstable System}
+		\begin{figure}
+			\centering
+			%\includegraphics[width=\textwidth]{rlocus_unsta_homo_final.eps}
+			%\caption{(a). Rootlocus for Homogeneous unstable system}
+			\includegraphics[width=0.6\textwidth]{path_unst_homo_final.eps}
+			\caption{(b). Containment Path in Homogeneous unstable system}
+		\end{figure}
+		The gain matrix for solving the containment problem is $$K=[10^8, 3 \times 10^7, 3\times 10^6, 10^5, 1683.3, 100]$$
+	\end{frame}
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{frame}{Experimental Setup: Heterogeneous Stable System}
+		\begin{figure}
+			\centering
+			\begin{minipage}{0.4\linewidth}
+				\centering
+				\includegraphics[width=0.8\textwidth]{hetero_topology.jpg}
+				\textnormal{(a). Topology for Heterogeneous system}
+			\end{minipage}
+			\hspace{1em}
+			\begin{minipage}{0.5\linewidth}
+				%\centering
+				System matrices of the unstable followers are given as:\\
+				$A_5=\begin{bmatrix}0 & 1 \\-4 & 5\end{bmatrix},~~~~~~ 
+				A_6=\begin{bmatrix}0 & 1 \\-10 & 10\end{bmatrix}$, \\
+				$A_7=\begin{bmatrix}0 & 1 \\20 & -20\end{bmatrix},~~~ 
+				A_8=\begin{bmatrix}0 & 1 \\-2 & 7\end{bmatrix}$.\\
+				
+				
+				The $\mathcal{L}_2$ matrix have $4$ (followers) different eigenvalues. So, we have to stabilize four root loci simultaneously. 
+			\end{minipage}\\
+		\end{figure}
+	\end{frame}
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{frame}{Simulation Results: Heterogeneous Stable System}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.6\textwidth]{rlocus_hetero1-4_final.eps}
+			\caption{(a). Root locus for followers in Heterogeneous system}
+			%\includegraphics[width=\textwidth]{path_hetero_final.eps}
+			%\textnormal{(b). Containment Path of followers in Heterogeneous system}
+		\end{figure}
+		The gain matrix for solving the containment problem is $$K=[0.5975,36.5,739,5000,1000,2000]$$
+	\end{frame}
+	\begin{frame}{Simulation Results: Heterogeneous Stable System}
+		\begin{figure}
+			\centering
+			%\includegraphics[width=\textwidth]{rlocus_hetero1-4_final.eps}
+			%\textnormal{(a). Root locus for followers in Heterogeneous system}
+			\includegraphics[width=0.6\textwidth]{path_hetero_final.eps}
+			\caption{(b). Containment Path of followers in Heterogeneous system}
+		\end{figure}
+		The gain matrix for solving the containment problem is $$K=[0.5975,36.5,739,5000,1000,2000]$$
+	\end{frame}
+	\begin{frame}{Conclusion \& Future Work}\label{Conc3DContainment}
+		\begin{block}{Conclusion}
+			\begin{itemize}
+				\item Designed single controller for all the followers.
+				\item The proposed controllers not only works for heterogeneous followers but also when some of them have unstable dynamics.
+				\item The proposed controller also nullifies the effect of noise.
+			\end{itemize}
+		\end{block}
+		\vspace*{-0.2cm}
+		\begin{block}{Future Work}
+			\begin{itemize}
+				\item Apply systematic approach to include non-identical heterogeneous follower to truly address the problem of heterogeneity.\vspace{2mm}
+				\item Implement the collision avoidance technique to prevent any accident among the followers.\vspace{2mm}
+				\item Using the directed topology including the directed cycles.\vspace{2mm}
+				\item Extend the result to weakly connected follower topology.\vspace{2mm}
+			\end{itemize}
+		\end{block}
+		\hyperlink{3DContainment}{\beamerbutton{BackTo3DContainment}}
+	\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\subsection*{Containment of Double Integrators in 2D Space}\label{2DContainment}
+	\begin{frame}{Containment Control for Terrestrial Robots:2D Case}
+		\begin{block}{}
+			- Swarm of agents/robots in 2D space.\\
+			- Trajectory to traverse known to selected few (\textcolor{blue}{Leaders})\\
+			- \textcolor{red}{Objective:} Plan topology and trajectories for followers such that they always remains inside the convex hull of the leaders.\\
+		\end{block}
+		%\begin{center}
+		%	\includegraphics[scale=0.3,keepaspectratio]{TSwarm.png}
+		%\end{center}
+		\begin{block}{Proposed Method}
+			\begin{enumerate}
+				\item Designing a suitable network topology for containment.
+				\item Using a polynomial based approach for agents to follow the convex hull.
+			\end{enumerate}
+		\end{block}
+		
+	\end{frame}
+	\begin{frame}{Background}
+		\vspace{-0.2cm}
+		\begin{block}{Proposition 1~\footnotemark[1]}
+			Let $P(x)$ be a polynomial with complex coefficient. Then the roots of derivative polynomial $P'(x)$ belongs to the convex hull of the roots of the polynomial P itself.
+		\end{block}
+		\vspace{-0.2cm}
+		\begin{block}{Proposition 2~\footnotemark[1]}
+			If $P(x)$ has distinct root, then the roots of derivative polynomial $P'(x)$ are distinct than the roots of P(x).
+		\end{block}
+		\vspace{-0.2cm}
+		\begin{block}{Lemma 3}
+			With two distinct point inside a triangle T, five distinct non-overlapping triangle can be created inside T.\\
+			\centering
+			\includegraphics[scale=0.3,keepaspectratio]{nonoverlaptriangle.eps}  	
+		\end{block}
+		\footnotetext[1]{Prasolov, V. V. (2004). Polynomials. Germany: Springer.}
+	\end{frame}
+	
+	
+	\begin{frame}{}
+		\begin{block}{Assumptions}
+			\begin{enumerate}
+				\item The agents/robots measure only relative position from a subset of leaders.
+				\item Each leader starts at a distinct position i.e. no two agents start at the same positions.
+				\item Leaders hold the shape of the convex hull at all time.
+				\item The network among the agents is directed.
+				\item The agents are modeled as double integrators.
+			\end{enumerate}
+		\end{block}
+		\begin{alertblock}{Strategy}
+			Let there be $M$ leaders whose positions are given by $x_1,x_2,\dots,x_m$. Form a polynomial $$P(x)=\prod_{i=1}^{m}(x-x_i)$$
+			Then the target position of $m-1$ followers will be given by roots of $P'(x)=0$, where $P'(x)$ is the derivative of $P(x)$ with respect to $x \in \C$.\\
+		\end{alertblock}
+	\end{frame}
+	
+	\begin{frame}{Apparent Problems}
+		\begin{itemize}
+			\item The idea seems to only accommodate $m-1$ followers i.e. less followers than the number of leaders. \\
+			\textcolor{blue}{ Probable Solution:} 
+			\begin{enumerate}
+				\item Create a layered structure i.e. making the $m-1$ followers as leaders for next $m-2$ followers and repeating the procedure. However, using this method we can accommodate at max  $m(m-1)/2$ followers and $m-k$ followers at the $k^{th}$ layer.
+				\item Other Solution is to create the layered structure by taking all the $m+m-1=2m-1$ agents as leaders for the next $2(m-1)$ followers. This way we can accommodate any number of followers. For calculations, $2^k(m-1)$ followers at the $k^{th}$ layer. 
+			\end{enumerate}
+			\item All followers needs to have connection with the leaders. If we try to increase the number using layered structure, then all the agents at $k^{th}$ layer should be connected to all the agents at $(k-1)^{th}$ layer. So the number of connections required will be $\frac{m^3-m}{3}=\mathcal{O}(3)$ for the first case and of $\mathcal{O}(4^k)$ at $k^{th}$ layer in second case. 
+			\item There might be multiple followers approaching the same point and may collide among them.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\begin{block}{Proposed Algorithm}
+			\begin{enumerate}
+				\item Divide the convex polygon formed by $m$ leaders into $m-2$ non-overlapping triangles. 
+				\item Index all the followers and pair them up. If there are odd number of follower then pair the last one with a virtual follower. 
+				\item Pick agents forming each set of triangle and compute the two position for the followers and place one pair of follower in each triangle.
+				\item For conflict resolution, the rules can be laid down as given below:
+				\begin{itemize}
+					\item The lower indexed follower will go to the root with smaller real part.
+					\item If the real parts are same then the lower indexed follower will go to the root with smaller imaginary part.
+					\item If both roots are same then pick the smaller indexed follower will pick position of any leader at random and will approach the mid point of line joining the leader's position with the computed root, while the other follower will approach the computed root.   
+				\end{itemize}
+				\item Using Lemma 3 we have in total $5(m-2)$ new non-over-lapping triangles.
+				\item Repeat above step $3-5$ till all the followers are positioned inside the convex hull. 
+			\end{enumerate}
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}{Simulations}
+		For designing the topology, we take $5$ leaders and $34$ followers.The follower places are shown as:\\
+		\centering
+		\includegraphics[scale=0.3,keepaspectratio]{5leader34followersContainment3alt.eps}
+		%\caption{Followers Contained inside the Convex hull of the leaders}	
+		
+	\end{frame}
+	\begin{frame}{The Conclusion}\label{Conc2DContainment}
+		%\begin{block}{Conclusion: 3D Containment}
+		%	\begin{itemize}
+		%		\item Designed single controller for all the followers.
+		%		\item Proposed controllers not only works for heterogeneous follower but also when some of them have unstable dynamics.
+		%		\item The proposed controller also nullifies the effect of noise.
+		%	\end{itemize}
+		%\end{block}
+		\begin{block}{Conclusion: 2D Containment}
+			\begin{itemize}
+				\item No Restriction on Number of Followers.
+				\item Algorithmic approach to conflict resolution.
+				\item Graph connections are significantly reduced. 
+				\item Incoming edges to each follower is $3$.
+			\end{itemize}
+		\end{block}
+		%\pause
+		%\textcolor{blue}{Publications: }\\
+		%\begin{enumerate}
+		
+		%\end{enumerate}
+	\end{frame}
+	
+	%------------------------------------------------
+\begin{comment}
+	
+	\begin{frame}[noframenumbering]
+		\begin{center}
+			\textcolor{blue}{Problem 3:Trajectory planning for interception with terminal constraints}\\	
+		\end{center}
+		Multi-Vehicular Cooperative Pursuit and Evasion Guidance Strategies: Multi-Agent Perspective \\
+		\begin{flushright}
+			\textcolor{cyan}{Prof. Shashi Ranjan Kumar(PI)}\\
+			Aerospace Engineering \\
+			IIT Bombay
+		\end{flushright}
+	\end{frame}
+	
+	
+	
+	
+	
+	\section{Containment Control of networked system of double integrator}%\label{Containment}
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{frame}[noframenumbering]
+		\begin{center}
+			\textcolor{blue}{Problem 4: Containment Control}
+		\end{center}
+	\end{frame}
+	\begin{frame}
+		\begin{block}{Containment Control of follower agent in 3-D space}
+			\begin{itemize}
+				\item Designed single controller for all the followers to drive them into the convex hull of the leaders.
+				\item The proposed controllers not only works for heterogeneous followers but also when some of them have unstable dynamics.
+				\item The proposed controller also nullifies the effect of noise.
+			\end{itemize}
+		\end{block}
+		\begin{block}{Containment Control of double integrators in 2-D space}
+			\begin{itemize}
+				\item Proposed an algorithm for containment in 2-D space
+				\item Experimentally validated by V. Adarsh.
+			\end{itemize}
+		\end{block}
+		\textcolor{blue}{Publications: }\\
+		\begin{enumerate}
+			\item ArjunDas, K., Dubey, A. K., \& Mukherjee, D. (2022). Containment control of heterogeneous multi-agent systems. IFAC-PapersOnLine, 55(22), 363-368.
+		\end{enumerate}	
+	\end{frame}
+	
+	\begin{frame}[noframenumbering]
+		\begin{center}
+			Thank You for your kind attention !!!
+		\end{center}
+	\end{frame}
+	\begin{frame}
+		\textcolor{blue}{Publications: }\\
+		\begin{enumerate}
+			\item Dubey, A. K., Mukherjee, D., \& Arya, K. (2022). Consensus of double integrators over a chain with reverse edges. IFAC-PapersOnLine, 55(13), 19-24.
+			%\item ArjunDas, K., Dubey, A. K., \& Mukherjee, D. (2022). Containment control of heterogeneous multi-agent systems. IFAC-PapersOnLine, 55(22), 363-368.
+			\item Dubey, A. K., Mukherjee, D., \& Arya, K. (2023, May). Consensus of double integrators in presence of a reverse edge in a chain: Analysis and design. In 2023 American Control Conference (ACC) (pp. 411-416). IEEE.
+			%\hyperlink{Containment}{\beamerbutton{PPT}}
+			\item Dubey, A. K., Mukherjee, D., \& Kumar, S. R. (2024, June). Trajectory Planning Using Dubins-Like Paths with Approach Angle and Terminal Time Constraints. In 2024 32nd Mediterranean Conference on Control and Automation (MED) (pp. 412-417). IEEE.
+			\item Dubey, A. K. \& Mukherjee, D. Guaranteed Consensus in System of Double Integrators in Presence of Directed Cycles [to be communicated]
+			\item Dubey, A. K. \& Mukherjee, D. On $\mathcal{H}_2$ performance of a network of double integrators in presence of cycles [to be communicated]
+			
+		\end{enumerate}
+		%	\begin{alertblock}{4. Containment Control of Multi-Agent System}
+			%		\begin{enumerate}
+				%		\item ArjunDas, K., Dubey, A. K., \& Mukherjee, D. (2022). Containment control of heterogeneous multi-agent systems. IFAC-PapersOnLine, 55(22), 363-368.
+				%		\end{enumerate}
+			%	\end{alertblock}
+	\end{comment}
+	
+	
+	
+	%\end{comment}
