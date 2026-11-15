@@ -1,0 +1,389 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black}
+\setlength{\parskip}{5pt}
+\setlength{\parindent}{0pt}
+\setlist[enumerate]{leftmargin=*,itemsep=7pt}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Ph.D. Thesis Evaluation -- Response to Examiner}
+\rhead{\small Avinash Kumar Dubey}
+\cfoot{\thepage}
+\newcommand{\comment}[1]{\vspace{5pt}\noindent\colorbox{gray!13}{\parbox{\dimexpr\linewidth-2\fboxsep}{\textbf{Examiner's comment:} #1}}}
+\newcommand{\response}{\par\textbf{Response:} }
+\newcommand{\revision}{\par\textbf{Proposed thesis revision:} }
+\newcommand{\caution}[1]{\par\textit{\color{red!65!black}Action before submission: #1}}
+\begin{document}
+\begin{center}
+    {\Large\bfseries Response to the Evaluation Report}\\[4pt]
+    {\large\bfseries Prof. Shubhendu Bhasin}\\
+    Department of Electrical Engineering, IIT Delhi\\[8pt]
+    \textbf{Candidate:} Avinash Kumar Dubey \qquad
+    \textbf{Roll No.:} 184076010\\
+    \textbf{Thesis:} \emph{Analysis \& Synthesis of Networked Dynamical Systems: Stability, Performance and Applications of Consensus}
+\end{center}
+\vspace{4pt}
+\hrule
+\vspace{8pt}
+\textbf{Dear Professor Bhasin,}	
+
+I sincerely thank you for your careful evaluation of my thesis and for the positive assessment of the technical soundness and motivation of the work. I am grateful for the detailed comments and constructive suggestions. They have helped identify places where the scope, assumptions, interpretation, and limitations of the results can be stated more clearly. I provide a point-by-point response below. Chapter and section references refer to the submitted thesis; exact page numbers will be updated after incorporating the revisions into the final thesis.
+\section*{A. General comments}
+\comment{The thesis does limited robustness analysis in the presence of uncertainties, changing graph topologies, etc.}
+\response
+I agree that the submitted analysis is primarily based on deterministic agent models and fixed communication topologies in Chapters 2--3, and on a specified stochastic-noise model in Chapter 4. The stability guarantees in Chapters 2--3 are exact for the stated graph structures and nominal model parameters; they should not be interpreted as a complete robust-stability result for arbitrary parametric uncertainty, switching topologies, delays, or packet losses. Chapter 3 does, however, provide explicit stability margins through Gershgorin-disc separation and root-locus gain selection. These margins indicate how far the nominal design is from the stability boundary, but do not by themselves establish robustness against every possible structured perturbation.
+%\revision
+%I will add a paragraph in the scope/limitations discussion clarifying (i) which uncertainties are covered by the present analysis, (ii) which are not, and (iii) how the derived spectral separation and root-locus gain margin can be used as nominal robustness indicators. 
+
+%Switching-graph consensus, uncertain edge weights, communication delays, and structured model uncertainty will be identified as future extensions.
+
+\comment{There seems to be a disconnect between Chapters 2--4 (consensus results) and Chapters 5--6 (guidance results). The unification claim seems weak.}
+\response
+I appreciate this observation. The two parts address different mathematical layers. Chapters 2--4 study agreement dynamics over communication graphs: spectral stability, localized stabilization, and disturbance attenuation. Chapters 5--6 address constrained trajectory generation; the consensus mechanism is used explicitly in Chapter 6 to coordinate the agents' spiral scaling parameters, while Chapter 5 develops the single-interceptor space--time path construction. Thus, the unifying idea is the use of networked coordination and consensus-related tools in multi-agent systems, rather than a claim that the guidance laws are directly related to the graph-spectral results in Chapters 2--4. The thesis mainly underscores two facets of consensus algorithms-- the theoretical analysis, and applications of consensus to cooperative guidance. 
+%\revision
+%I will revise the Introduction and Conclusions to describe the thesis as two complementary parts under the broader theme of analysis and synthesis for networked multi-agent systems. I will explicitly identify the interface: graph-based agreement and performance in Chapters 2--4, and physically constrained trajectory synthesis with a directed-consensus coordination layer in Chapter 5--6.
+
+\comment{Some results are provided for a class of graphs without a clear statement on possible extension to more general network topologies.}
+\response
+We agree that the results consider different graph structures and their assumptions should be made explicit. Chapters 2--3 concern directed chain graphs augmented by one or two reverse edges; the six cases exhaust the relative arrangements of two reverse edges on that chain, but certainly do not admit all possible directed graphs. Chapter 4 shifts the focus and studies undirected path graphs with one or two added cycles, for which the incidence-matrix and symmetric-Laplacian structure enables the closed-form $\mathcal{H}_2$ analysis. The formulae and optimal placement conclusions are again not applicable to arbitrary digraphs or arbitrary cyclic graphs.
+%\revision
+%I will add a concise ``topology covered and extension'' paragraph at the end of the relevant chapter introductions and in the Conclusions. For broader digraphs, a possible route is to use strongly connected component decompositions and then analyze the interconnection between components; however, the resulting spectral and performance conditions require additional work. For Chapter 4, extension to general undirected graphs and directed cyclic graphs will be stated as open problems rather than immediate corollaries.
+
+\section*{B. Chapter-wise comments}
+\subsection*{Chapter 1}
+\comment{When talking about the single- and double-integrator cases, it would be useful to include some references.}
+\response
+The thesis currently cites foundational work on first-order consensus and second-order consensus, including papers by Olfati-Saber and Murray, Jadbabaie, Lin and Morse, and Ren and Atkins. I will ensure that the discussion introducing single-integrator and double-integrator models cites these foundational references and more directly at the point where the models and their consensus properties are introduced, rather than relying on citations appearing later in the literature review.
+\revision
+The paragraph in Section 1.3 discussing first- and second-order agent models will be revised to include the appropriate bibliographic entries.
+
+\comment{Why consider the $\mathcal{H}_2$ norm as the metric for measuring performance and disturbance attenuation?}
+\response
+The choice of the $\mathcal{H}_2$ norm is motivated by the stochastic disturbance-rejection framework discussed by Dullerud and Paganini, in which the squared $\mathcal{H}_2$ norm of a stable linear time-invariant (LTI) system represents the steady-state mean-square output response when driven by zero-mean white-noise inputs. Equivalently, it can be expressed through the trace of the controllability Gramian, with the appropriate input covariance normalization. Thus, the $\mathcal{H}_2$ norm provides a natural scalar measure of the average energy amplification from stochastic disturbances to the regulated output, and its minimization corresponds to reducing the steady-state output variance.
+
+The formulation in Chapter 4 is consistent with these conditions. The process disturbances acting on the agent dynamics and the measurement noise along the communication links are modelled as zero-mean, mutually uncorrelated Gaussian white-noise processes. Furthermore, the edge-space projection eliminates the unobservable consensus modes and yields a stable reduced-order LTI realization, while the regulated output captures the relative position and velocity errors across the network edges. Therefore, the squared $\mathcal{H}_2$ norm provides a meaningful measure of the steady-state mean-square disagreement induced by these disturbances. Minimizing this norm with respect to the network topology consequently provides a systematic means of identifying cycle configurations that improve stochastic disturbance attenuation.
+
+This criterion is complementary to the $\mathcal{H}_\infty$ norm: while the $\mathcal{H}_2$ norm quantifies average energy or variance-oriented performance under stochastic disturbances, the $\mathcal{H}_\infty$ norm characterizes worst-case disturbance amplification.
+%\revision
+%I will add this motivation in Chapter 1 and state explicitly that the $\mathcal{H}_2$ interpretation relies on the stable reduced-order model and the white-noise idealization specified in Chapter 4. The metric is not presented as universally preferable; it is appropriate for the stochastic disturbance-attenuation question considered here.
+
+\comment{There seems to be a lot of repetition of contributions, gaps, etc. in this chapter. It would be good to consolidate them.}
+\response
+The Introduction currently discusses the research gaps, objectives, and contributions in several places, which lead to repetition. I will consolidate these discussions, streamline the narrative, and ensure that each aspect is presented clearly in its appropriate section while retaining all the essential research contributions.
+
+\revision
+I will consolidate the material by keeping (i) The literature review and identified gaps in Section 1.3, (ii) A concise list of research objectives in Section 1.4, and (iii) Thesis contribution list in Section 1.5. Repeated descriptions of the same gap or contribution will be removed.
+
+
+\subsection*{Chapter 2}	
+\comment{First paragraph:``While intuitively beneficial for local feedback and string-stability enforcement, this reverse edge introduces a directed feedback cycle into an otherwise acyclic interaction
+topology.'' You may add a line or two on how this is detrimental.}
+\response
+Although a reverse edge provides additional local feedback, closing a loop over a long chain can introduce longer feedback paths and increase the effective inertia of the network response, potentially making the convergence dynamics more sluggish. Furthermore, as discussed in response to Prof. Debasish Ghose's comment (\textcolor{red}{Be precise. Which comment number are you referring to and on which page of that document should the reader look for an answer to it?}) on interpreting reverse edges through the feedback framework of LTI systems, the reverse edge can be viewed as a feedback connection around the nominal acyclic network. As in conventional feedback control systems, introducing such a feedback connection modifies the closed-loop pole locations, and stability is not guaranteed merely because the nominal system is stable; it also depends on the feedback dynamics and gain.
+
+For double-integrator consensus, each nonzero Laplacian eigenvalue $\lambda$ contributes factors of the form
+\[
+s^2+\gamma\lambda s+\lambda
+\]
+to the overall characteristic polynomial with $\lambda$ being possibly complex. This is because the directed cycle can cause the Laplacian eigenvalues to become complex, thereby introducing additional coupling between position feedback and velocity damping. Consequently, an insufficient velocity-coupling gain may cause a closed-loop pole to enter the open right-half plane, leading to loss of consensus stability. Thus, unlike the single-integrator case, a directed cycle can affect both the convergence rate and the stability of the network, not merely slow down the rate of convergence.
+	
+%\revision
+%I will add this explanation immediately after the quoted sentence in the opening discussion of Chapter 2 and connect it to the modal stability condition stated in Chapter 1.
+	
+\comment{What is special about studying two feedback loops? Are the results applicable to one or more than two feedback loops?}
+\response
+Two reverse edges are the smallest extension beyond the single-loop setting that creates nontrivial interactions between cycles: the cycles may be disjoint, share a node, partially overlap, be nested, or share a head or tail. These alternatives change the characteristic polynomial in structurally distinct ways and allow the thesis to expose the role of cycle placement and overlap. The six cases in Chapter 2 form an exhaustive classification for exactly two reverse edges on a directed chain. The derivations do not establish an exhaustive closed-form result for an arbitrary number of reverse edges. A network with two reverse edges is a simpler special setting and is covered by the two-loop results discussed in the thesis; more than two reverse edges would require a higher-order determinant expansion and a new classification of their mutual intersections. We feel that while the two-loop scenario provides a window into the nature of interactions between multiple cycles and their consequent effects on the consensus-seeking system, with a larger number of loops, obtaining clean analytical results may be intractable, although some design guidelines pertaining to extent of overlap, lengths of cycles etc., may still hold.
+
+%\revision
+%I will state explicitly that the two-loop problem is chosen as the minimal setting in which cycle--cycle interaction can be isolated and classified, and that extension to three or more loops is outside the present theorem statements. I will also clarify that the results should not be read as an arbitrary-multiple-loop theorem.
+
+\comment{When you say ``longer cycle to reside strictly closer to the leader node'', how close is ``close''?}
+\response
+Here, ``closer'' is a topological, rather than a metric, statement. Under the chain ordering $1,2,\ldots,N$, the leader is node 1, and the position of a cycle relative to the leader is specified by its head index $x_i$, where the head is the node at which the reverse edge terminates. Thus, a smaller head index indicates that the cycle is closer to the leader.
+
+The restriction in the earlier paper requires the longer cycle to be closer to the leader. This allows the cycle lengths to be ordered as $\ell_1>\ell_2$, so that terms such as $s^{\ell_1-\ell_2}$ appearing in the characteristic polynomial have nonnegative integer exponents. Without this restriction, such expressions may involve negative powers and would no longer constitute a polynomial in $s$, making the adopted polynomial-based analysis inapplicable in its original form. Therefore, ``strictly closer'' refers to the relative ordering of the cycle head indices, subject to the longer-cycle condition, and not to any prescribed physical or numerical distance.
+
+The present Chapter 2 analysis removes this restriction by considering all six possible relative arrangements of the two cycles.
+
+%\revision
+%I will replace the qualitative phrase by this explicit index-based definition and state that ``strictly closer'' means a strictly smaller head-node index, not a prescribed physical distance.
+
+\comment{Can the results in this chapter extend to graph topologies other than directed chains?}
+\response
+The present proofs exploit the chain's topological ordering and the fact that each reverse edge closes a uniquely identifiable interval of the chain. This structure makes the characteristic determinant reducible to the scalar polynomial equations derived in the chapter. For a general directed acyclic graph, a reverse edge can close several directed paths and hence several cycles; the same interval-based classification and scalar reduction need not apply. Some ideas may extend when the graph has a suitably simple path or parent-child structure, but this requires a separate analysis.
+
+%\revision
+%I will make the chain-topology assumption prominent in the chapter statement of scope and add a paragraph explaining that extension to general DAGs or digraphs is not automatic. Possible extensions to graphs with a unique path between the reverse-edge endpoints or restricted strongly connected components will be identified as future work.
+\comment{Simulation 2.4.1: It may still be worthwhile to include the velocity plots to show transients. How is $\gamma$ chosen and why is such a precise value (4 decimal places) considered? It may be useful to check if consensus is also achieved for $\gamma$ less than this value?}
+
+\response
+Including the velocity trajectories provides a more complete illustration of the transient response and allows both position and velocity consensus to be examined. The value of $\gamma$ used in Simulation 2.4.1 is calculated using the analytical sufficient stability condition established in Theorem 2.26. The corresponding threshold is determined from the dominant non-zero Laplacian eigenvalue for the considered two-loop topology. Thus, the selected value is based on the theoretical stability condition rather than empirical tuning.
+
+The value is reported to four decimal places to represent the numerical evaluation of the analytical expression. This precision is for reporting purposes and does not imply that such precision is essential for practical implementation.
+
+Since the condition established in Theorem 2.26 is sufficient but not necessary, consensus may also be achieved for values of $\gamma$ below the calculated sufficient bound.
+
+\revision
+Figure 2.7 has been revised to include both position and velocity trajectories, thereby providing a more complete illustration of the transient response. In addition, a comparative simulation using a value of $\gamma$ below the calculated sufficient coupling parameter has been included in Figure 2.8 to investigate whether consensus can still be achieved below this bound.
+
+Furthermore, the necessary and sufficient stability condition has been used to determine the exact stability threshold for the considered topology. A simulation with $\gamma$ below this threshold has been included in Figure 2.9 to demonstrate the resulting breakdown of consensus.
+
+
+\comment{The time axis of Fig. 2.8 may be shortened to say 25 seconds to reveal more details about the transients.}
+
+\response
+The transient response depends on the initial position and velocity conditions of the agents. The original time horizon was selected to illustrate the overall convergence behaviour. However, to provide a clearer view of the transient dynamics, Figure 2.8 has been regenerated using appropriately selected initial conditions, with the time axis restricted to 25 seconds.
+
+\revision
+Figure 2.8 (renumbered as Figure 2.10 in the revised thesis) has been regenerated with suitably selected initial conditions and a reduced time horizon of 25 seconds. This provides a clearer illustration of the transient convergence behavior of the agents.
+
+\comment{Is it possible to simulate the consensus collapse that you describe in Section 4.8?}
+\response
+I understand this comment refers to the consensus collapse. Figure 2.9 \& 2.11 has been included to illustrate the breakdown of consensus under the considered conditions.
+
+\subsection*{Chapter 3}
+
+\comment{What is the effect of node/edge scaling on performance or the rate at which consensus is achieved? Similarly, it may be worthwhile to study the effect of scaling on robustness to disturbances and noise ($\mathcal{H}_2$-norm?).}
+\response
+The scaling constructions in Chapter 3 are designed to move the relevant Gershgorin regions and increase a lower bound on the real parts of the nonzero eigenvalues, thereby restoring stability for a fixed $\gamma$. A larger guaranteed spectral separation generally improves the asymptotic convergence-rate bound, although the actual dominant eigenvalue and transient response depend on the complete scaled Laplacian. The chapter's proofs establish stability, not an optimal transient-performance design. Similarly, the $\mathcal{H}_2$ results in Chapter 4 are derived for a different, undirected path-graph setting; they do not directly quantify the $\mathcal{H}_2$ effect of the directed node/edge scaling in Chapter 3.
+
+%\revision
+%I will add a discussion explaining the distinction between (i) the stability guarantee supplied by the Gershgorin's separation, (ii) the convergence rate governed by the actual dominant eigenvalue, and (iii) disturbance/noise amplification, which requires a separate input-output analysis. A quantitative $\mathcal{H}_2$ comparison for the scaled directed networks will be identified as future work rather than inferred from the existing Chapter 4 formula.
+
+\comment{Does the scaling method work for arbitrary feedback-loop range? How does it scale with increase in this range?}
+\response
+For the leader-excluded single-loop case treated by the node-scaling theorem, the construction is stated for loop range $\ell=y_1-x_1$ and any fixed $\gamma>0$. The minimum initial scaling level satisfies
+\[
+p_1 \geq \frac{\ell+1}{\gamma^2}+\varepsilon,\qquad \varepsilon>0,
+\]
+and the scaling factors are arranged as an arithmetic progression. Thus, for fixed $\gamma$, the required baseline scaling grows linearly with $\ell+1$. The edge-scaling and combined-scaling constructions have analogous range-dependent design inequalities. The root-node loop is a distinct case and is handled by the complementary root-locus construction, not by simply applying the leader-excluded node-scaling theorem.
+
+
+\comment{It may be worthwhile to analyze the root-locus-based methods for robustness to modelling errors.}
+\response
+The root-locus construction in Section 3.4 provides a nominal gain margin for the selected complementary transfer function and design parameters. This is useful as a first robustness indicator with respect to gain variation in that scalar loop representation. It does not, however, constitute a complete robustness analysis for simultaneous uncertainty in edge weights, agent dynamics, delays, or unmodeled dynamics. In particular, a classical root-locus gain margin should not be interpreted as a structured uncertainty bound for the full network.
+
+%\revision
+%I will clarify this distinction and state that the computed gain margin can be used to select a nominal design with some gain-variation tolerance. Robustness to structured plant and graph uncertainty, including worst-case pole migration, remains a separate extension requiring an uncertainty model and an appropriate robust-control analysis.
+
+\subsection*{Chapter 4}
+	
+\comment{Any reason for moving to undirected graphs? Do the results extend trivially to directed graphs?}
+\response
+The original motivation was to investigate disturbance attenuation and $\mathcal{H}_2$ performance in directed networks. However, during the course of this investigation, it became evident that even the undirected case, particularly the effect of cycle placement and overlap on $\mathcal{H}_2$ performance, had not been explored fully. Addressing this question itself led to several interesting results, which form the contribution of Chapter 4.
+
+The restriction to undirected graphs is also mathematically significant. The analysis in this chapter exploits the symmetry of the graph Laplacian and the resulting positive-definite structure of the essential edge Laplacian. These properties enable the reduced-order dynamics and the associated Lyapunov equation to be handled analytically. For directed graphs, the loss of symmetry makes the corresponding analysis considerably more complicated, and the techniques developed here cannot be directly extended. In particular, extending the analysis to directed cyclic graphs may require a substantial reconsideration of the mathematical tools and is beyond the scope of the present work.
+
+%\revision
+%I will clarify the original motivation for studying directed networks, explain why the investigation focused on the less-explored undirected case, and explicitly identify the extension to directed cyclic graphs as an important direction for future research.
+
+\comment{Please substantiate the statement ``In practical deployments, edge communication channels are corrupted by zero-mean Gaussian measurement noise''. Is this true in general?}
+\response
+The statement should not be interpreted as a universal empirical description of communication-channel errors. Rather, the zero-mean Gaussian white-noise model is adopted as a standard stochastic representation of measurement uncertainty in consensus networks. For example, Zelazo and Mesbahi developed an edge-based $\mathcal{H}_2$ framework for noisy consensus in which both process disturbances and relative-measurement noise are modelled as Gaussian white-noise inputs. Their subsequent work with Schuler and Allgöwer used this framework to investigate the influence of cycle structure on network performance. Similarly, Young, Scardovi, and Leonard studied the robustness of consensus under noisy measurements and disturbances, including directed communication topologies.
+
+This modelling choice is appropriate for the present investigation for three reasons. First, zero-mean noise represents measurement fluctuations around an unbiased relative-state estimate, without introducing a systematic measurement bias. Second, the white-noise assumption provides an idealization of rapidly varying measurement errors whose correlation time is short relative to the network dynamics. Third, the Gaussian assumption provides a convenient stochastic representation of aggregate measurement and estimation uncertainties. Together with the assumption of mutually uncorrelated noise sources, this yields a tractable model for analysing the mean-square disagreement through the $\mathcal{H}_2$ norm.
+
+It is important to note that the $\mathcal{H}_2$ analysis relies on the second-order noise statistics and the white-noise assumption; Gaussianity itself is not essential to the covariance-based $\mathcal{H}_2$ calculation. In practical systems, measurement errors may also exhibit bias, temporal or spatial correlation, quantization, and packet losses. These effects are not explicitly represented in the present model and would require appropriate extensions.
+
+%\revision
+%I will revise the statement to clarify that zero-mean Gaussian white noise is a modelling assumption adopted for the stochastic performance analysis, rather than a universal property of practical communication channels. I will also cite the relevant noisy-consensus literature, particularly the edge-based formulation of Zelazo and Mesbahi and subsequent work on noisy consensus networks, and explain the rationale and limitations of the adopted assumptions.
+
+
+\comment{Why call (4.10) uncoupled global state equations?}
+\response
+I agree that ``uncoupled'' is inaccurate. Although the equations are written in global stacked coordinates, the agents remain dynamically coupled through the graph Laplacian $\mathcal{L}$:
+\[
+\dot{x}=v,\qquad \dot{v}=-\mathcal{L}x-\gamma \mathcal{L}v+q-Er.
+\]
+The word was intended to indicate that the equations are expressed at the global nodal level before the subsequent edge-coordinate transformation, not that the individual agents are independent.
+
+\revision
+``uncoupled global state equations'' has been replaced with ``global nodal state equations'' (or ``network-level state equations'') throughout the relevant discussion.
+
+\comment{The standard $\mathcal{H}_2$ norm is defined for white-noise processes. Based on the problem definition in this chapter, the process and measurement noise are not necessarily white. Is there a case for whitening the noise for the conditions of the $\mathcal{H}_2$ norm to be satisfied?}
+\response
+The analysis does not involve whitening the physical disturbances. Instead, the process and measurement disturbances are modelled as zero-mean white-noise inputs from the outset. This assumption is explicitly specified in the problem formulation through their covariance relations:
+\[
+\mathbb{E}[q_i(t)q_i(\tau)]
+=\sigma_q^2\delta(t-\tau),
+\qquad
+\mathbb{E}[r_{ij}(t)r_{ij}(\tau)]
+=\sigma_r^2\delta(t-\tau).
+\]
+Thus, the derivation of the $\mathcal{H}_2$ performance measure in this chapter is conditional on the adopted white-noise model.
+
+This modelling approach is consistent with established literature on noisy consensus networks. For instance, Zelazo and Mesbahi (2009) developed an edge-based $\mathcal{H}_2$ framework for agreement protocols under noise, while Young, Scardovi, and Leonard (2010) investigated the robustness of consensus networks under directed communication by modelling the disturbances as white-noise inputs. These works provide a relevant foundation for adopting the white-noise model in the present analysis.
+
+The white-noise assumption provides a tractable representation of rapidly varying stochastic disturbances and allows the steady-state mean-square disagreement to be quantified through the $\mathcal{H}_2$ norm and the associated Lyapunov equation. The Gaussian assumption is additionally adopted for the stochastic disturbance model, although the covariance-based $\mathcal{H}_2$ calculation itself does not require Gaussianity.
+
+If the actual disturbances exhibit significant temporal correlation, a more general analysis would require an appropriate coloured-noise model, for example, through stable shaping filters and an augmented state-space realization. Such an extension is not considered in the present work.
+
+%\revision
+%I will clarify that the process and measurement disturbances are explicitly assumed to be white in the problem formulation, rather than being whitened as a preprocessing step. I will strengthen the justification by citing established noisy-consensus literature and state that the derived $\mathcal{H}_2$ results are conditional on the adopted white-noise model.
+
+\comment{Why restrict analysis to path graphs? Do the results hold in general for all cyclic graphs or only a class of cyclic graphs?}
+\response
+The path graph is selected because it provides a canonical one-dimensional structure in which the location, length, and overlap of added cycles can be parameterized explicitly. This enables the derivation of closed-form expressions for the $\mathcal{H}_2$ norm and the corresponding optimal cycle-placement and overlap conditions.
+
+Nevertheless, the considered topology has connections to other network structures. For example, a ring network can be represented as a path graph with an additional edge connecting its two endpoints and is therefore a special case of the cyclic topologies considered in this chapter. Similarly, consider a rooted parent--child tree in which communication links are directed from parent to child. Adding an undirected communication link between two nodes creates a cycle along the unique path connecting them. Such networks provide a natural setting for extending the present edge-based analysis.
+
+However, the closed-form expressions and optimality results derived in this chapter rely on the specific path structure. In a branched parent--child network, additional branches can influence the network dynamics and the resulting $\mathcal{H}_2$ performance. Consequently, the present results cannot be directly generalized to arbitrary cyclic graphs, and the corresponding performance and optimality conditions require further analysis.
+
+%\revision
+%I will include illustrative examples of a ring network and a branched parent--child network with an additional communication link. I will clarify that the ring topology is directly covered by the present formulation, whereas the parent--child network illustrates a possible extension of the edge-based analysis. The scope of the established closed-form results will remain restricted to the path-based cyclic topologies considered in this chapter.
+
+\subsection*{Chapter 5}
+
+\comment{Is it possible to accommodate moving targets using this or a similar scheme?}
+\response
+The present Chapter 5 construction assumes a stationary target, with
+the engagement geometry and terminal conditions defined with respect
+to a fixed target location. Extending the formulation to moving targets
+is not straightforward. Even for a non-manoeuvring target with constant
+velocity, the interception time becomes an additional unknown, and
+the terminal impact angle must be defined as the angle between the
+missile's and target's velocity vectors at the instant of interception.
+Consequently, both the interception condition and the terminal
+engagement geometry would need to be reformulated.
+
+For a manoeuvring target, predicting its position and velocity at the
+interception instant introduces further challenges. Although the
+underlying path-construction approach may provide a starting point
+for investigating this problem, its applicability under the modified
+terminal conditions and the associated path-feasibility constraints
+would require a separate analysis.
+
+Therefore, moving-target interception is identified as a possible
+extension of the present work and is not covered by the results
+established in this chapter.
+
+%\revision
+%I will explicitly state the stationary-target assumption and identify moving-target interception as a possible extension, highlighting the need to reformulate the interception-time and terminal impact-angle conditions.
+
+\comment{The current theory assumes a fixed design radius and does not provide stability or continuity guarantees for continuously varying $r_d$, whereas you propose adjusting the secondary turn radius $r_d$ to satisfy simultaneous terminal approach angle and time-of-arrival constraints. Can $r_d$ be updated online while preserving continuity and terminal guarantees?}
+\response
+In the submitted Chapter 5 analysis, $r_d$ is treated as a fixed
+path-design parameter selected from a feasible interval. The
+monotonicity and continuity argument establishes the existence and
+uniqueness of a fixed $r_d^\star$ for a feasible requested arrival
+time. The closed-loop implementation then tracks the resulting
+precomputed geometry. However, the present analysis does not
+establish stability, continuity, or terminal guarantees when
+$r_d$ is continuously varied online.
+
+Online adaptation of $r_d$ while preserving path continuity and
+satisfying the terminal approach-angle and time-of-arrival
+constraints is an interesting but challenging extension. It would
+require a separate analysis of the parameter-update mechanism,
+geometric feasibility, and closed-loop guarantees. This is beyond
+the scope of the present work.
+
+%\revision
+%I will clarify that the theoretical guarantees in Chapter 5 apply to a fixed selected value of $r_d^\star$. I will also identify online adaptation of $r_d$, with preservation of path continuity and terminal constraints, as an important direction for future research in the concluding chapter.
+
+\subsection*{Chapter 6}
+
+\comment{It would be useful to include details on why spiral guidance is intrinsically better than the Dubins-based method.}
+\response
+The advantage of the spiral-based construction over the Dubins-based
+method is primarily related to the smoothness and flexibility of the
+resulting trajectory, rather than universal superiority.
+
+A classical Dubins path is composed of circular arcs and straight-line
+segments. Although the trajectory is continuous and has a continuous
+tangent direction (i.e., it is generally $C^1$), its curvature is
+piecewise constant and changes discontinuously at the junctions
+between these segments. Consequently, the trajectory is generally
+not $C^2$ at these junctions. Since the lateral acceleration required
+to follow a path is given by
+\[
+a_{\mathrm{lat}}=v^2\kappa=\frac{v^2}{r},
+\]
+where $v$ is the vehicle speed and $\kappa$ is the path curvature,
+these curvature discontinuities can also result in discontinuities
+in the lateral-acceleration demand, even when the speed is continuous.
+
+In contrast, the Archimedean-spiral construction considered in
+Chapter 6 provides continuously varying curvature. This results
+in a smoother lateral-acceleration profile and avoids the abrupt
+changes in acceleration demand associated with the transitions
+between straight and circular segments in a classical Dubins path.
+Furthermore, for the parameter range considered in this chapter,
+the curvature tends to zero as the target is approached, thereby
+providing a smooth terminal transition.
+
+Another motivation for investigating the spiral-based construction
+was its richer geometric structure, which offers potential flexibility
+for coordinating multiple trajectories in a salvo attack scenario.
+Although the present chapter focuses on individual trajectory
+generation and impact-angle tracking, this flexibility motivates
+further investigation of spiral-based guidance for coordinated
+multi-vehicle engagements.
+
+It is important to note that the two constructions address different
+design objectives. The Dubins-like construction in Chapter 5 provides
+an explicit design parameter $r_d$ for simultaneous impact-angle and
+impact-time tuning, whereas Chapter 6 focuses on curvature feasibility
+and impact-angle tracking. Thus, the spiral-based construction offers
+advantages in trajectory smoothness and potential multi-trajectory
+coordination, while the Dubins-like construction provides a direct
+mechanism for space--time tuning.
+
+%\revision
+%I will strengthen the comparison in Chapter 6 by explaining thecontinuity properties of the Dubins trajectory and their implications for curvature and lateral-acceleration demand. I will also highlight the smoother curvature profile of the spiral construction and include its potential for coordinated salvo attacks as a motivation for further research. The comparison will clarify the distinct design objectives addressed by the two methods rather than claim that one is universally superior.
+
+\comment{Sensitivity of the $\alpha$ threshold to uncertainties in speed, target positions, etc.?}
+\response
+The feasibility threshold in Chapter 6 is determined by the
+relationship
+\[
+\alpha_{\mathrm{ref}}=\frac{v_p^2 f(\beta)}{a_{\max}}.
+\]
+Therefore, its sensitivity to variations in missile speed and
+maximum available acceleration can be examined analytically.
+For fixed $\beta$, the first-order relative variation is
+\[
+\frac{\delta\alpha_{\mathrm{ref}}}{\alpha_{\mathrm{ref}}}
+\simeq
+2\frac{\delta v_p}{v_p}
+-\frac{\delta a_{\max}}{a_{\max}}.
+\]
+This indicates that the threshold is quadratically dependent on
+missile speed and inversely dependent on the available acceleration.
+
+Uncertainty in the initial target geometry affects the initial
+scaling parameter $\alpha_0$, rather than directly affecting
+$\alpha_{\mathrm{ref}}$. Consequently, such uncertainty changes
+the feasibility margin between $\alpha_{\mathrm{ref}}$ and
+$\alpha_0$.
+
+These relations provide a local analytical sensitivity
+characterization around the nominal parameter values. However,
+they do not establish robustness guarantees under bounded or
+stochastic uncertainties. A systematic robustness analysis
+accounting for uncertainties in the engagement parameters is
+beyond the scope of the present work.
+
+%\revision
+%I will clarify the dependence of the feasibility threshold on missile speed and acceleration capability, distinguish it from the influence of initial geometric uncertainty, and identify a comprehensive uncertainty and robustness analysis as a direction for future investigation.
+\vspace{10pt}
+\hrule
+\vspace{8pt}
+I again thank you for the constructive criticism and evaluation. I will incorporate the clarifications and revisions described above, and will ensure that any additional numerical results are included only after due verification.
+
+\vspace{14pt}
+Sincerely,\\[18pt]
+\textbf{Avinash Kumar Dubey}\\
+Roll No. 184076010\\
+Department of Electrical Engineering\\
+Indian Institute of Technology Bombay
+\end{document}

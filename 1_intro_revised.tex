@@ -1,0 +1,773 @@
+\chapter{Introduction}\label{ch:intro}
+\section{Motivation and Background}
+\subsection{Emergence of Networked Autonomous Systems}
+Over the past two decades, multi-agent systems (MAS) have transitioned from theoretical abstractions to critical infrastructure across modern engineering domains. AI, especially agentic AI, Distributed vehicular platoons, unmanned aerial vehicle (UAV) swarms, robotic cooperative manipulation teams, and decentralized smart microgrids, all rely on distributed coordination algorithms. Compared to traditional centralized control architectures, distributed frameworks offer significant advantages:
+\begin{itemize}
+    \item \textbf{Scalability:} Computational load is distributed across individual agent nodes, avoiding exponential growth in processing overhead at a central server. 
+    \item \textbf{Spatial Coverage and Flexibility:} Localized interaction topologies enable large - scale geographic deployment, allowing swarms to adapt to changing environments dynamically.
+    \item \textbf{Fault Tolerance:} Eliminating single points of failure ensures that the loss or degradation of an individual node does not compromise the global mission.
+\end{itemize}
+A fundamental requirement in all multi-agent coordination problems is achieving consensus-- a state where a group of autonomous agents reaches agreement on a shared physical or virtual variable (such as position, velocity, heading, or phase) relying solely on local inter-agent communication.
+
+\subsection{Topologies, Information Flow, and Graph Theory Fundamentals}
+In networked multi-agent systems, the interaction structure among agents is modelled using graph theory \cite{godsil2001algebraic, mesbahi2010graph}. Let $\G = (\Vg, \Eg, \Wg)$ represent a weighted directed graph (digraph).
+\begin{definition}[Weighted Directed Graph \cite{mesbahi2010graph, ren2008consensus}]\label{def:weighted_digraph}
+A weighted directed graph (or digraph) is defined as a triplet $\G = (\Vg, \Eg, \Wg)$, where:
+\begin{enumerate}
+    \item $\Vg = \{1, 2, \dots, N\}$ is a finite, non-empty set of $N$ discrete nodes or vertices, with $N = |\Vg|$ representing the total number of autonomous agents in the network.
+    \item $\Eg \subseteq \Vg \times \Vg$ is the set of directed edges (or arcs) representing directed information channels. An ordered pair $(j, i) \in \Eg$ denotes a directed edge originating at tail node $j$ and terminating at head node $i$. In this setup, information flows strictly from agent $j$ to agent $i$; node $j$ is classified as a parent/neighbor of node $i$, and node $i$ is classified as a child of node $j$. Self-loops are excluded, i.e., $(i, i) \notin \Eg, \forall i \in \Vg$.
+    \item $\Wg = [w_{ij}] \in \R^{N \times N}$ is the weighted adjacency matrix. The matrix entry $w_{ij}$ represents the non-negative weight associated with the edge $(j, i) \in \Eg$:
+    \begin{equation}\label{eq:adj_matrix_def}
+        w_{ij} = \begin{cases}
+            > 0, & \text{if } (j, i) \in \Eg \\
+            0, & \text{otherwise}
+        \end{cases}
+    \end{equation}
+    For an unweighted graph, $w_{ij} = 1$ whenever $(j, i) \in \Eg$.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Neighbor Sets and In-Degree Matrix \cite{ren2008consensus, mesbahi2010graph}]\label{def:neighbor_set}
+The set of in - neighbors of agent $i$, denoted by $\mathcal{N}_i$, consists of all nodes from which agent $i$ receives direct state information:
+\begin{equation}
+    \mathcal{N}_i = \{j \in \Vg : (j, i) \in \Eg\}
+\end{equation}
+The weighted in-degree of node $i$, denoted by $d_{\text{in}, i}$, is the sum of the weights of all incoming edges to node $i$:
+\begin{equation}
+    d_{\text{in}, i} = \sum_{j \in \mathcal{N}_i} w_{ij} = \sum_{j=1}^{N} w_{ij}
+\end{equation}
+The network in-degree matrix $\Dg \in \R^{N \times N}$ is a diagonal matrix containing the in-degrees of all agents:
+\begin{equation}\label{eq:indegree_matrix}
+    \Dg = \text{diag}(d_{\text{in}, 1}, d_{\text{in}, 2}, \dots, d_{\text{in}, N})
+\end{equation}
+\end{definition}
+
+\begin{definition}[Node Graph Laplacian Matrix \cite{godsil2001algebraic, mesbahi2010graph}]\label{def:ch_intro_graphLaplacian}
+The node graph Laplacian matrix $\mathcal{L} \in \R^{N \times N}$ associated with the graph $\G$ is defined as:
+\begin{equation}\label{eq:laplacian_def}
+    \mathcal{L} = \Dg - \Wg
+\end{equation}
+where $\Dg = \text{diag}(d_{in,1}, d_{in,2}, \dots, d_{in,N})$ is the in-degree matrix with diagonal elements $d_{in,i} = \sum_{j=1}^{N} w_{ij}$.\\
+Element-wise, the elements of the Laplacian matrix $[\mathcal{L}]_{ij} \eqqcolon l_{ij}$ are given by:
+\begin{equation}\label{eq:ch_intro_laplacianentries}
+    l_{ij} = \begin{cases}
+        \sum_{k=1, k \neq i}^{N} w_{ik}, & \text{if } i = j \\
+        -w_{ij}, & \text{if } i \neq j
+    \end{cases}
+\end{equation}
+\end{definition}
+\begin{remark}[Spectral Properties of the Laplacian \cite{ren2005second, mesbahi2010graph}]\label{prop:ch_intro_laplacianzeroeig}
+\leavevmode\par\noindent
+The graph Laplacian $\mathcal{L}$ exhibits the following fundamental spectral properties:
+\begin{enumerate}
+    \item \textbf{Row-Sum Property and Zero Eigenvalue:} By definition \eqref{eq:ch_intro_laplacianentries}, the sum of entries along every row of $\mathcal{L}$ is identically zero:
+    \begin{equation}
+        \sum_{j=1}^{N} l_{ij} = d_{\text{in}, i} - \sum_{j=1, j \neq i}^{N} w_{ij} = 0, \quad \forall i \in \{1, 2, \dots, N\}
+    \end{equation}
+    This establishes that $\mathcal{L} \mathbf{1}_N = 0_{N \times 1}$, where $\mathbf{1}_N = [1, 1, \dots, 1]^T \in \R^N$ is the vector of all ones. Thus, $\lambda_1 = 0$ is always an eigenvalue of $\mathcal{L}$ with a corresponding right eigenvector $\mathbf{1}_N$.
+    
+    \item \textbf{Positive Real Spectrum Location:} By Gershgorin's Disc Theorem, all eigenvalues $\lambda \in \sigma(\mathcal{L})$ lie within the union of closed discs centered at $l_{ii} = d_{\text{in},i}$ with radii $R_i = \sum_{j \neq i} |l_{ij}| = d_{\text{in},i}$. Consequently, every eigenvalue satisfies:
+    \begin{equation}
+        \mathfrak{Re}(\lambda_i) \ge 0, \quad \forall i \in \{1, 2, \dots, N\}
+    \end{equation}
+    
+    \item \textbf{Strict Positivity of Non-Zero Eigenvalues:} If the directed graph $\G$ contains a \emph{directed spanning tree}, then $\lambda_1 = 0$ is a simple eigenvalue (algebraic multiplicity of one), and all remaining $N-1$ non-zero eigenvalues satisfy:
+    \begin{equation}
+        \mathfrak{Re}(\lambda_i) > 0, \quad \forall i \in \{2, 3, \dots, N\}
+    \end{equation}
+    ordered by real parts such that $0 = \lambda_1 < \mathfrak{Re}(\lambda_2) \le \dots \le \mathfrak{Re}(\lambda_N)$.
+\end{enumerate}
+\end{remark}
+\subsubsection{Topological Connectivity and Graph Classifications (Directed Graphs)}
+The stability and performance of multi-agent protocols depend directly on the structural connectivity of the underlying graph. 
+\begin{definition}[Path, Cycle, and Connectivity \cite{godsil2001algebraic}]\label{def:paths_cycles}
+\leavevmode\par\noindent
+\begin{enumerate}
+    \item A \emph{directed path} from node $i_0$ to node $i_k$ is a finite sequence of distinct nodes $(i_0, i_1, \dots, i_k)$ such that $(i_{m-1}, i_m) \in \Eg$ for all $m \in \{1, 2, \dots, k\}$.
+    \item A \emph{directed cycle} (or loop) is a directed path that begins and ends at the same vertex, i.e., $i_0 = i_k$, with all intermediate nodes being distinct.
+    \item A graph $\G$ is \emph{strongly connected} if there exists a directed path between every pair of distinct vertices $i, j \in \Vg$.
+    \item A graph $\G$ contains a \emph{directed spanning tree} if there exists at least one node $r \in \Vg$ (termed the root or leader node) such that a directed path exists from $r$ to every other node $i \in \Vg \setminus \{r\}$. The root node has an in-degree of zero ($d_{\text{in}, r} = 0$) in an acyclic network.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Topological Ordering and Reverse Edges \cite{hao2019role} \cite{dubey2022consensus}]\label{def:topological_ordering}
+A graph $\G$ admits a \emph{topological ordering} if its vertices can be indexed as $\{1, 2, \dots, N \}$ such that every directed edge $(j, i) \in \Eg$ satisfies $j < i$.
+\begin{enumerate}
+    \item Topological ordering is possible if and only if the directed graph $\G$ is acyclic (a Directed Acyclic Graph, or DAG).
+    \item Under a topological ordering, the weighted adjacency matrix $\Wg$ and graph Laplacian $\mathcal{L}$ are strictly lower triangular.
+    \item A \emph{reverse edge} is a directed edge $(y, x) \in \Eg$ that violates the topological ordering condition, i.e., $y > x$. Adding a reverse edge to an acyclic chain network creates a directed cycle.
+    \item The \emph{cycle length} $\ell$ created by a reverse edge from tail node $y$ to head node $x$ is defined as:
+    \begin{equation}\label{eq:cycle_length_def}
+        \ell = y - x
+    \end{equation}
+    \begin{remark}
+        Note that $\ell$ is defined as one less than the number of nodes participating in the cycle.
+    \end{remark}
+\end{enumerate}
+\end{definition}
+\subsubsection{Some Illustrative Numerical Examples}
+To illustrate some of these concepts, consider two distinct 5-agent topologies ($N = 5$) with unit edge weights.
+\begin{example}[Acyclic Directed Chain with Topological Ordering]\label{example:acyclic_chain_ex}
+Consider a 5 agents directed chain as in Figure \ref{fig:acyclic_chain_ex}, where, information flows strictly downstream from Node 1 to Node 5.
+
+\begin{figure}[ht!]
+    \centering
+    \begin{tikzpicture}[node distance=2.2cm, state/.style={circle, draw=blue!80, fill=blue!5, thick, minimum size=1.0cm, font=\large\bfseries}]
+        \node[state] (1) {1};
+        \node[state] (2) [right of=1] {2};
+        \node[state] (3) [right of=2] {3};
+        \node[state] (4) [right of=3] {4};
+        \node[state] (5) [right of=4] {5};
+        
+        \path [->, >=stealth, ultra thick, blue!80] (1) edge node[above] {$1$} (2);
+        \path [->, >=stealth, ultra thick, blue!80] (2) edge node[above] {$1$} (3);
+        \path [->, >=stealth, ultra thick, blue!80] (3) edge node[above] {$1$} (4);
+        \path [->, >=stealth, ultra thick, blue!80] (4) edge node[above] {$1$} (5);
+    \end{tikzpicture}
+    \caption{A 5-agent directed chain topology with topological ordering.}
+    \label{fig:acyclic_chain_ex}
+\end{figure}
+
+The adjacency matrix $\mathcal{W}_{\mathcal{G}1}$, in-degree matrix $\mathcal{D}_{\mathcal{G}1}$, and Laplacian matrix $\mathcal{L}_{\mathcal{G}1}$ for this topology are:
+\begin{equation*}
+\mathcal{W}_{\mathcal{G}1} = \begin{bmatrix} 
+0 & 0 & 0 & 0 & 0 \\ 
+1 & 0 & 0 & 0 & 0 \\ 
+0 & 1 & 0 & 0 & 0 \\ 
+0 & 0 & 1 & 0 & 0 \\ 
+0 & 0 & 0 & 1 & 0 
+\end{bmatrix}, \quad
+\mathcal{D}_{\mathcal{G}1} = \text{diag}(0, 1, 1, 1, 1), \quad
+\mathcal{L}_{\mathcal{G}1} = \begin{bmatrix} 
+0 & 0 & 0 & 0 & 0 \\ 
+-1 & 1 & 0 & 0 & 0 \\ 
+0 & -1 & 1 & 0 & 0 \\ 
+0 & 0 & -1 & 1 & 0 \\ 
+0 & 0 & 0 & -1 & 1 
+\end{bmatrix}
+\end{equation*}
+Since $\mathcal{L}_{\mathcal{G}1}$ is strictly lower triangular, its eigenvalues are $\sigma(\mathcal{L}_{\mathcal{G}1}) = \{0, 1, 1, 1, 1\}$. The spectrum is entirely real, with a simple eigenvalue at zero corresponding to the root node (Node 1).
+\end{example}
+
+\begin{example}[Directed Chain with a Reverse Edge Forming a Cycle]\label{example:cyclic_chain_ex}
+\leavevmode\par \noindent
+Now consider the graph shown in Figure \ref{fig:cyclic_chain_ex}, formed by adding a reverse edge from Node 4 to Node 2 ($y = 4, x = 2$) to the chain in Example \ref{example:acyclic_chain_ex}. This creates a directed cycle of length $\ell = 4 - 2 = 2$ involving nodes $\{2, 3, 4\}$.
+
+\begin{figure}[ht!]
+    \centering
+    \begin{tikzpicture}[node distance=2.2cm, state/.style={circle, draw=blue!80, fill=blue!5, thick, minimum size=1.0cm, font=\large\bfseries}]
+        \node[state] (1) {1};
+        \node[state] (2) [right of=1] {2};
+        \node[state] (3) [right of=2] {3};
+        \node[state] (4) [right of=3] {4};
+        \node[state] (5) [right of=4] {5};
+        
+        \path [->, >=stealth, ultra thick, blue!80] (1) edge node[above] {$1$} (2);
+        \path [->, >=stealth, ultra thick, blue!80] (2) edge node[above] {$1$} (3);
+        \path [->, >=stealth, ultra thick, blue!80] (3) edge node[above] {$1$} (4);
+        \path [->, >=stealth, ultra thick, blue!80] (4) edge node[above] {$1$} (5);
+        \path [->, >=stealth, ultra thick, red!80] (4) edge[bend right=50] node[below] {$w_r = 1$} (2);
+    \end{tikzpicture}
+    \caption{A 5-agent directed chain with a reverse edge $(4, 2)$ forming a directed cycle of length $\ell = 2$.}
+    \label{fig:cyclic_chain_ex}
+\end{figure}
+
+The modified adjacency matrix $\mathcal{W}_{\mathcal{G}2}$ and Laplacian matrix $\mathcal{L}_{\mathcal{G}2}$ are:
+\begin{equation*}
+\mathcal{W}_{\mathcal{G}2} = \begin{bmatrix} 
+0 & 0 & 0 & 0 & 0 \\ 
+1 & 0 & 0 & 1 & 0 \\ 
+0 & 1 & 0 & 0 & 0 \\ 
+0 & 0 & 1 & 0 & 0 \\ 
+0 & 0 & 0 & 1 & 0 
+\end{bmatrix}, \quad
+\mathcal{L}_{\mathcal{G}2} = \begin{bmatrix} 
+0 & 0 & 0 & 0 & 0 \\ 
+-1 & 2 & 0 & -1 & 0 \\ 
+0 & -1 & 1 & 0 & 0 \\ 
+0 & 0 & -1 & 1 & 0 \\ 
+0 & 0 & 0 & -1 & 1 
+\end{bmatrix}
+\end{equation*}
+Computing the characteristic equation $|\lambda I_5 - \mathcal{L}_{\mathcal{G}2}| = \lambda (\lambda - 1) [(\lambda - 2)(\lambda - 1)^2 - 1] = 0$ yields the Laplacian eigenvalues:
+\begin{equation*}
+\sigma(\mathcal{L}_{\mathcal{G}2}) = \left\{ 0, \; 1, \; 2.4656, \; 0.7672 + j 0.7925, \; 0.7672 - j 0.7925 \right\}
+\end{equation*}
+The addition of the reverse edge introduces a pair of complex-conjugate eigenvalues with imaginary parts $\mathfrak{Im}(\lambda) = \pm 0.7925$.
+\end{example}
+
+\subsubsection{Dynamical Agent Models and Kronecker Products as a useful tool}
+The interaction topology modeled by $\G$ dictates the state evolution of physical agents. In this dissertation, we analyze agents with second-order (double-integrator) dynamics.
+
+Consider $N$ double-integrator agents operating in $d$-dimensional space ($d \in \{1, 2, 3\}$):
+\begin{equation}\label{eq:double_integrator_model}
+    \dot{p}_i(t) = v_i(t), \quad \dot{v}_i(t) = u_i(t), \quad i \in \{1, 2, \dots, N\}
+\end{equation}
+where $p_i(t) = [p_{i,1}, \dots, p_{i,d}]^T \in \R^d$ and $v_i(t) = [v_{i,1}, \dots, v_{i,d}]^T \in \R^d$ denote the position and velocity vectors of agent $i$, and $u_i(t) \in \R^d$ denotes its acceleration control input.
+
+The distributed consensus control law as proposed by \cite{ren2005second} and \cite{ren2008consensus} is:
+\begin{equation}\label{eq:consensus_control_law_local}
+    u_i(t) = -\sum_{j=1}^{N} w_{ij} \left[ \left( p_i(t) - p_j(t) \right) + \gamma \left( v_i(t) - v_j(t) \right) \right]
+\end{equation}
+where $\gamma > 0$ is the global velocity coupling parameter.
+
+Stacking the network position and velocity vectors into $p(t) = [p_1^T(t), \dots, p_N^T(t)]^T \in \R^{Nd}$ and $v(t) = [v_1^T(t), \dots, v_N^T(t)]^T \in \R^{Nd}$, the control protocol \eqref{eq:consensus_control_law_local} can be expressed compactly using the Kronecker product $\otimes$:
+\begin{equation}\label{eq:network_dynamics_kronecker}
+    \begin{aligned}
+        \dot{p}(t) &= v(t) \\
+        \dot{v}(t) &= -(\mathcal{L} \otimes I_d) p(t) - \gamma (\mathcal{L} \otimes I_d) v(t)
+    \end{aligned}
+\end{equation}
+
+Defining the composite state vector $\mathcal{X}(t) := [p^T(t), v^T(t)]^T \in \R^{2Nd}$, the network state-space representation is:
+\begin{equation}\label{eq:composite_state_space}
+    \dot{\mathcal{X}}(t) = (\hat{\mathcal{L}} \otimes I_d) \mathcal{X}(t), \quad \text{where } \hat{\mathcal{L}} = \begin{bmatrix} 0_{N,N} & I_N \\ -\mathcal{L} & -\gamma \mathcal{L} \end{bmatrix} \in \R^{2N \times 2N}
+\end{equation}
+where $0_{N,N}$ and $I_N$ represent the $N \times N$ zero and identity matrices, respectively.
+
+\subsubsection{Gershgorin's Disc Theorem}
+
+To bound Laplacian eigenvalues and ensure stability without explicitly factoring high-order characteristic polynomials, Gershgorin's Disc Theorem serves as a primary tool.
+
+\begin{theo}[Gershgorin's Disc Theorem \cite{horn2012matrix}]\label{thm:gershgorin_detailed}
+Let $A = [a_{ij}] \in \R^{n \times n}$ be a square matrix. For each column $j \in \{1, 2, \dots, n\}$, define the column-sum radius $R_j(A)$ as the sum of the absolute values of the non-diagonal elements in column $j$:
+\begin{equation}\label{eq:gershgorin_radius}
+    R_j(A) = \sum_{i=1, i \neq j}^{n} |a_{ij}|
+\end{equation}
+Associated with each column $j$, define a closed disk $\mathfrak{D}_j(A)$ in the complex plane $\mb{C}$, centered at the diagonal entry $a_{jj}$ with radius $R_j(A)$:
+\begin{equation}\label{eq:gershgorin_disc}
+    \mathfrak{D}_j(A) = \left\{ z \in \mb{C} : |z - a_{jj}| \le R_j(A) \right\}
+\end{equation}
+Then, all eigenvalues $\lambda \in \sigma(A)$ lie within the union of these $n$ Gershgorin discs:
+\begin{equation}
+    \sigma(A) \subset D(A) \coloneqq \bigcup_{j=1}^{n} \mathfrak{D}_j(A)
+\end{equation}
+Since $\sigma(A) = \sigma(A^T)$, identical statements hold using row-sum radii.
+\end{theo}
+
+\begin{figure}[ht!]
+    \centering
+    \begin{tikzpicture}[scale=0.9]
+        % Axes
+        \draw[->, thick] (-1,0) -- (7,0) node[right] {$\mathfrak{Re}(z)$};
+        \draw[->, thick] (0,-3.5) -- (0,3.5) node[above] {$\mathfrak{Im}(z)$};
+        
+        % Vertical distance line
+        \draw[dashed, red, thick] (1.5,-3.2) -- (1.5,3.2) node[above] {$\mathfrak{Re}(z) = d$};
+        
+        % Discs
+        \draw[fill=blue!10, draw=blue!80, thick, opacity=0.7] (3.0,0) circle (1.5cm);
+        \fill (3.0,0) circle (2pt) node[below] {$a_{11}$};
+        
+        \draw[fill=green!10, draw=green!80, thick, opacity=0.7] (4.5,0) circle (2.0cm);
+        \fill (4.5,0) circle (2pt) node[below] {$a_{22}$};
+        
+        % Annotations
+        \draw[<->, thick, red] (0,0) -- (1.5,0) node[midway, above] {$d$};
+        \node at (3.0, 1.8) {$\mathfrak{D}_1(A)$};
+        \node at (5.2, 2.3) {$\mathfrak{D}_2(A)$};
+    \end{tikzpicture}
+    \caption{Geometric illustration of Gershgorin discs bounded away from the origin by a minimum real separation distance $d > 0$.}
+    \label{fig:gershgorin_concept}
+\end{figure}
+
+In Chapter 3, Gershgorin's Disc Theorem is applied to shift matrix sub-blocks to design local node and edge perturbation factors that enforce a minimal separation distance $d \ge 1/\gamma^2$  of the non-zero eigenvalue of the Laplacian with the smallest real part from the imaginary axis, thereby guaranteeing second-order consensus.
+
+\subsubsection{The Ramifications of Feedback Cycles in Networks}
+A foundational result in consensus theory states that a networked system can achieve state agreement over a directed graph if and only if the communication topology $\mathcal{G}$ contains a directed spanning tree (a rooted out-branching)— a subgraph where at least one node (the root or leader node) has a directed path to every other node in the network. 
+
+In physical networks, directed cycles (or feedback loops) arise naturally due to bidirectional spatial proximity, feedback mechanisms between lower and higher organizational tiers, or reverse-edge communication channels. For example, in an autonomous vehicular platoon moving over a directed chain topology, information primarily flows downstream (vehicle $i-1$ to vehicle $i$). However, if a downstream vehicle transmits spatial coordinates back to an upstream vehicle to enforce tight inter-vehicular spacing, a closed directed cycle is formed. Directed loops present a critical dichotomy in multi-agent networks:
+\begin{itemize}
+    \item \textbf{The Single-Integrator Case:} For first-order networks, the introduction of reverse edges leading to directed cycles merely degrades the algebraic connectivity (Fiedler eigenvalue) and slows down the rate of convergence to consensus, without jeopardizing consensus altogether.
+    \item \textbf{The Double-Integrator Case:} For second-order networks, directed cycles introduce complex-conjugate eigenvalues with imaginary components into the graph Laplacian spectrum. These complex eigenvalues induce phase lag between position alignment and velocity damping. If the velocity coupling parameter $\gamma$ falls below a critical lower bound, this phase lag can cause severe dynamic instability, leading to complete breakdown of consensus despite the presence of a directed spanning tree.
+\end{itemize}
+
+\subsection{Incidence Matrices, Edge Factorizations, and Tree Decompositions}
+To enable disturbance attenuation and $\mathcal{H}_2$ norm analysis (as developed in Chapter \ref{ch:Robustness_Analysis}), we consider a network of double-integrator agents operating over an undirected path graph. For an effective $\mathcal{H}_2$ performance evaluation, the network dynamics are more conveniently expressed using edge-based state representations rather than traditional node-based coordinates. This transformation isolates and eliminates the zero eigenvalue of the graph Laplacian, thereby yielding a non-singular, reduced-order Laplacian structure required for internal stability and transfer function formulation. A non-singular structure is needed to ensure the state matrix $\mathcal{A}_x$ is Hurwitz, allowing the computation of controllability/observability Gramians and the transfer function $G(s) = \mathcal{C}_z(sI - \mathcal{A}_x)^{-1}\mathcal{B}_w$.
+
+A comprehensive treatment of the graph-theoretic definitions and edge-space formulations presented in this section can be found in \cite{zelazo2007agreement, zelazo2009h2, zelazo2010edge}.
+
+Let $e = |\Eg|$ denote the total number of edges in the graph $\G$. Assign an arbitrary orientation index $k \in \{1, 2, \dots, e\}$ to each edge $(j, i) \in \Eg$.
+
+\begin{definition}[Incidence Matrix]\label{def:incidence_matrix}
+The node-edge incidence matrix $E(\G) \in \R^{N \times e}$ of an undirected graph $\G$ has its $(i, k)$-th entry defined as:
+\begin{equation}
+    [E(\G)]_{ik} = \begin{cases}
+        +1, & \text{if vertex } i \text{ is the head (destination) of directed edge } k \\
+        -1, & \text{if vertex } i \text{ is the tail (source) of directed edge } k \\
+        0, & \text{otherwise}
+    \end{cases}
+\end{equation}
+For an unweighted undirected graph, the relationship between the node Laplacian $\mathcal{L}$ and the incidence matrix $E(\G)$ is given by:
+\begin{equation}
+    \mathcal{L} = E(\G) E(\G)^T
+\end{equation}
+The edge Laplacian matrix $\mathcal{L}_e \in \R^{e \times e}$ is defined dually as:
+\begin{equation}
+    \mathcal{L}_e = E(\G)^T E(\G)
+\end{equation}
+\end{definition}
+\begin{definition}[Spanning Tree Factorization of the Incidence Matrix] \label{def:spanning_tree_factorization}
+\leavevmode\par\noindent
+Consider a graph $\G$ containing a spanning tree. By topological reordering of the edge columns, the incidence matrix $E(\G)$ can be partitioned into tree edges and cycle-closing edges:
+\begin{equation}
+    E(\G) = \begin{bmatrix} \etree & E_c \end{bmatrix}
+\end{equation}
+where $\etree \in \R^{N \times (N-1)}$ represents the $N-1$ columns belonging to a chosen spanning tree, and $E_c \in \R^{N \times (e - N + 1)}$ represents the remaining $e - N + 1$ edges that form cycles.
+Since the columns of $E_c$ lie in the column space spanned by $\etree$, there exists a linear transformation matrix $T \in \R^{(N-1) \times (e - N + 1)}$ such that $E_c = \etree T$. The transformation matrix $T$ is given by:
+\begin{equation}
+    T = (\etree^T \etree)^{-1} \etree^T E_c
+\end{equation}
+Thus, the full incidence matrix can be factored compactly as:
+\begin{equation}\label{eq:incidence_factored}
+    E(\G) = \etree \begin{bmatrix} I_{N-1} & T \end{bmatrix} =: \etree R
+\end{equation}
+where $R := \begin{bmatrix} I_{N-1} & T \end{bmatrix} \in \R^{(N-1) \times e}$.
+
+The reduced tree node Laplacian $\lntree$ and reduced tree edge Laplacian $\letree$ are defined respectively as:
+\begin{equation}
+    \lntree = \etree \etree^T \in \R^{N \times N}, \quad \letree = \etree^T \etree \in \R^{(N-1) \times (N-1)}
+\end{equation}
+\end{definition}
+
+\subsubsection{System Performance via the $\mathcal{H}_2$ Norm}
+To measure noise propagation and disturbance rejection in second-order agent networks under process noise $q(t) \in \R^N$ and measurement noise $r(t) \in \R^e$, we use the $\mathcal{H}_2$ norm metric.
+
+Consider a stable, linear time-invariant (LTI) reduced-order system $\Sigma_e$ expressed in edge coordinates:
+\begin{equation}\label{eq:h2_system_def}
+    \begin{aligned}
+        \dot{x}_e(t) &= \mathcal{A}_x x_e(t) + \mathcal{B}_w w(t) \\
+        z(t) &= \mathcal{C}_z x_e(t)
+    \end{aligned}
+\end{equation}
+where $w(t) = [q^T(t), r^T(t)]^T$ is a vector of uncorrelated zero-mean Gaussian white noise processes, $x_e(t)$ represents relative edge states, and $z(t)$ denotes regulated output errors.
+
+When $\mathcal{A}_x$ is Hurwitz, the squared $\mathcal{H}_2$ norm of the system transfer function $G(s) = \mathcal{C}_z (s I - \mathcal{A}_x)^{-1} \mathcal{B}_w$ is given by \cite{dullerud2013course}:
+\begin{equation}\label{eq:h2_norm_trace}
+    \|\Sigma_e\|_{\mathcal{H}_2}^2 = \text{trace}(\mathcal{C}_z \mathcal{P}_{\text{ctrl}} \mathcal{C}_z^T) = \text{trace}(\mathcal{B}_w^T \mathcal{P}_{\text{obs}} \mathcal{B}_w)
+\end{equation}
+where $\mathcal{P}_{\text{ctrl}}$ and $\mathcal{P}_{\text{obs}}$ are the controllability and observability Gramians, satisfying the Lyapunov equations:
+\begin{equation}\label{eq:lyapunov_equations}
+    \mathcal{A}_x \mathcal{P}_{\text{ctrl}} + \mathcal{P}_{\text{ctrl}} \mathcal{A}_x^T + \mathcal{B}_w \mathcal{B}_w^T = 0_{2(N-1), 2(N-1)}
+\end{equation}
+\begin{equation}
+    \mathcal{A}_x^T \mathcal{P}_{\text{obs}} + \mathcal{P}_{\text{obs}} \mathcal{A}_x + \mathcal{C}_z^T \mathcal{C}_z = 0_{2(N-1), 2(N-1)}
+\end{equation}
+
+In Chapter 4, closed-form solutions for $\|\Sigma_e\|_{\mathcal{H}_2}^2$ are derived to establish how graph cycle length, spatial loop placement relative to the root node, and dual-loop overlap govern stochastic noise attenuation.
+
+
+\subsection{Real-World Applications: Cooperative Guidance and Interception}
+The theoretical analysis and synthesis of consensus protocols is directly connected to physical motion control in defense and aerospace engineering, specifically in coordinated interception and cooperative multi-agent guidance. In modern precision strike missions against stationary or low-maneuverability targets (such as naval vessels or ground installations), a single interceptor can be countered by Close-In Weapon Systems (CIWS).
+
+To overcome such defensive countermeasures, swarms of autonomous interceptors need to execute coordinated attacks. This requires solving two physical constraints simultaneously:
+\begin{itemize}
+    \item Temporal Constraint (Impact Time $t_{\text{imp}}$): All interceptors in the swarm must intercept the target at the exact same time instant to overwhelm automated defenses.
+    \item Directional Constraint (Impact Angle $\zeta$): Each interceptor must intercept the target along a designated approach angle to maximize warhead penetration or exploit blind spots of the target's radar system.
+\end{itemize}
+Executing these cooperative engagements under strict non-holonomic kinematics and actuator limits ($\vert{}a_M\vert{} \le a^{\text{max}}$) requires bridging the ideas of consensus theory with physical trajectory generation for individual interceptors.
+
+\section{Research Context and Problem Overview}
+The research presented in this dissertation addresses four interconnected problems arising in networked dynamical systems and autonomous multi-agent coordination.
+\begin{enumerate}
+    \item \textbf{Consensus Stability over Directed Cyclic Networks:} The introduction of reverse communication edges in directed
+    chain networks modifies the Laplacian spectrum and can compromise consensus stability in double-integrator systems.
+    Understanding the influence of interacting directed cycles and developing suitable stability conditions are therefore
+    important.
+    \item \textbf{Decentralized Consensus Restoration:} In practical networks, the velocity coupling parameter may be fixed by design. Consequently, structural modifications should not necessarily require global spectral information or network-wide gain retuning. This motivates the development
+    of localized strategies for restoring consensus.
+    \item \textbf{Disturbance Attenuation and Network Performance:} In addition to stability, networked systems must maintain
+    satisfactory performance in the presence of process and measurement disturbances. The relationship between directed cycle structure and the $\mathcal{H}_2$ performance of double-integrator networks requires investigation.
+    \item \textbf{Constrained Trajectory Synthesis and Cooperative Interception:} Autonomous interceptors must satisfy terminal impact-angle and impact-time requirements while respecting physical acceleration constraints. Extending feasible trajectory synthesis to coordinated multi-agent systems introduces additional spatial and temporal coordination requirements.
+\end{enumerate}
+\section{Literature Review, Research Gaps and Problem Formulation} \label{sec:literature_review}
+
+The research presented in this dissertation lies at the intersection of control theory, algebraic graph theory, networked dynamical systems, and autonomous guidance. This section reviews the relevant state-of-the-art across these domains and identifies the limitations that motivate the present research. Rather than treating the literature review and problem statements independently, each subsection discusses the existing developments, highlights the associated research gaps, and formulates the corresponding problem addressed in this dissertation.
+
+\subsection{Consensus Protocols and Stability of Double-Integrator Networks}
+\label{subsec:second_order_consensus}
+
+The systematic study of consensus protocols, in which a group of autonomous agents achieves agreement on a common state through localized interactions, began with foundational works on first-order (single-integrator) systems \cite{saber2003consensus, jadbabaie2003coordination, fax2004information, 1333204}. Olfati-Saber and Murray \cite{saber2003consensus} established a graph-theoretic framework for consensus over fixed and switching communication topologies. Moreau \cite{moreau2005stability} subsequently extended these results to time-dependent directed communication links using set-valued Lyapunov functions.
+
+While these foundational results primarily considered first-order agent dynamics, physical robotic platforms, UAVs, and mechanical systems are often governed by double-integrator dynamics, in which acceleration or force acts as the control input. Ren and Atkins \cite{ren2005second} extended consensus protocols to double-integrator agents over directed communication topologies. Consider $N$ double-integrator agents operating under the distributed control law
+\begin{equation}
+\label{eq:agent-wise}
+    u_i(t) = -\sum_{j=1}^{N} w_{ij}
+    \left[
+    (p_i(t)-p_j(t))+
+    \gamma(v_i(t)-v_j(t))
+    \right],
+    \quad i\in\{1,2,\ldots,N\},
+\end{equation}
+where $p_i(t),v_i(t)\in\mathbb{R}^d$ denote the position and velocity vectors of agent $i$, respectively, $w_{ij}$ is the $(i,j)$-th entry of the weighted adjacency matrix $\mathcal{W}$, and $\gamma>0$ is the velocity coupling parameter.
+
+A fundamental distinction between first-order and second-order consensus emerges in directed networks. For first-order systems, the existence of a directed spanning tree is sufficient to guarantee consensus under the standard assumptions. In contrast, for double-integrator systems, the existence of a directed spanning tree alone does not guarantee consensus. The presence of complex Laplacian eigenvalues can introduce additional stability constraints, making consensus dependent on the choice of the velocity coupling parameter.
+
+Ren and Atkins \cite{ren2005second} established a conservative sufficient lower bound on $\gamma$ for achieving consensus over general directed graphs containing a directed spanning tree:
+\begin{equation}
+\label{eq:ren_gamma_bound}
+    \gamma >
+    \max_{i\in\{2,\ldots,N\}}
+    \sqrt{\frac{2}{\mathfrak{Re}(\lambda_i)}},
+\end{equation}
+where $\lambda_i$ denotes the $i$-th non-zero eigenvalue of the graph Laplacian matrix $\mathcal{L}$, ordered according to their real parts such that
+$0=\lambda_1$ and
+$0<\mathfrak{Re}(\lambda_2)\leq\cdots\leq\mathfrak{Re}(\lambda_N)$.
+
+Subsequently, Yu et al. \cite{yu2009second, yu2010some} derived the exact necessary and sufficient condition for second-order consensus over directed topologies. According to their result, the velocity coupling parameter must satisfy
+\begin{equation}
+\label{eq:yu_gamma_exact_bound}
+    \gamma >
+    \max_{i\in\{2,\ldots,N\}}
+    \frac{|\mathfrak{Im}(\lambda_i)|}{|\lambda_i|}
+    \sqrt{\frac{1}{\mathfrak{Re}(\lambda_i)}},
+\end{equation}
+where
+\[
+    |\lambda_i|=
+    \sqrt{
+    \mathfrak{Re}(\lambda_i)^2+
+    \mathfrak{Im}(\lambda_i)^2
+    }
+\]
+is the magnitude of the $i$-th Laplacian eigenvalue. This condition establishes that the stability of double-integrator consensus depends on both the real and imaginary components of the Laplacian spectrum.
+
+For acyclic directed networks, such as directed chains and trees, the Laplacian eigenvalues are real. Consequently, the right-hand side of \eqref{eq:yu_gamma_exact_bound} becomes zero, permitting consensus for any $\gamma>0$. The introduction of reverse communication edges, however, can create directed cycles and introduce complex-conjugate eigenvalue pairs. In such cases, the velocity coupling parameter must exceed a strictly positive threshold determined by the Laplacian spectrum.
+
+Figures~\ref{fig:spanning_tree_consensus} and~\ref{fig:cycle_consensus_failure} illustrate this distinction. While consensus is achieved over an acyclic directed spanning-tree topology for the selected value of $\gamma$, the introduction of directed cycles can lead to a breakdown of consensus when the prescribed coupling parameter is insufficient.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.6\textwidth,keepaspectratio]{Sapnning.eps}
+    \caption{Consensus achieved for $\gamma=0.1$ over an acyclic directed spanning-tree topology.}
+    \label{fig:spanning_tree_consensus}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.6\textwidth,keepaspectratio]{Cycle.eps}
+    \caption{Breakdown of consensus in the presence of directed cycles for an insufficient velocity coupling parameter.}
+    \label{fig:cycle_consensus_failure}
+\end{figure}
+
+These results highlight an important limitation of existing consensus protocols. Although the analytical conditions in \eqref{eq:ren_gamma_bound} and \eqref{eq:yu_gamma_exact_bound} characterize the required velocity coupling, their application following a structural modification of the network may necessitate updated spectral information and a corresponding retuning of $\gamma$. In practical networks, however, the velocity coupling parameter may already be fixed by design, and global spectral information may not be available to individual agents.
+
+This motivates the following research problem:
+\begin{problem}
+\label{prob:multi_loop_coupling}
+Analyze how the presence of multiple interacting directed loops, whether disjoint, overlapping, or sharing root/leader nodes, modifies the Laplacian spectrum and the corresponding stability requirements for double-integrator consensus over directed chain topologies. Furthermore, develop localized edge and node perturbation strategies that guarantee consensus under a fixed, predesigned velocity coupling parameter, without requiring global spectral information or network-wide gain retuning.
+\end{problem}
+
+\subsection{Spectral Analysis of Directed Cycles and Decentralized Consensus Restoration}
+\label{subsec:cyclic_spectral_analysis}
+
+Feedback loops and directed cycles occur naturally in networked physical systems due to bidirectional communication links, spatial proximity, and multi-tiered communication architectures. Their influence on consensus has been investigated extensively, particularly in the context of first-order systems.
+
+For single-integrator networks, the spectral properties of directed graphs and cyclic topologies have been studied from several perspectives \cite{mukherjee2016consensus, mukherjee2013reachability, mukherjee2021finite}. Zhang et al. \cite{zhang2017effect} analyzed the effect of adding a reverse edge across a stem in a directed acyclic graph (DAG), showing that the resulting convergence characteristics are governed by the subgraph encompassing the directed cycle. Mo et al. \cite{mo2019effects} extended this analysis to reverse edges across stems in DAGs.
+
+For chain networks containing two reverse edges, Hao et al. \cite{hao2019role} investigated the dominant convergence root of single-integrator consensus and developed polynomial equations to characterize eigenvalue shifts. However, their analytical framework is subject to specific topological restrictions. In particular, the derivations are valid only when the lengths of the two cycles induced by the reverse edges differ by at least one, i.e.,
+$|l_1-l_2|\geq 1$, and when the longer cycle is located strictly closer to the root node.
+
+Although these studies provide useful insights into the influence of directed cycles on first-order consensus, the stability implications are fundamentally different for double-integrator systems. As discussed in Section~\ref{subsec:second_order_consensus}, complex Laplacian eigenvalues impose additional restrictions on the velocity coupling parameter. Therefore, characterizing the spectral effects of interacting directed cycles is essential for understanding and restoring consensus in second-order networks.
+
+In particular, when the network contains multiple reverse edges, the resulting cycles may be disjoint, nested, or partially overlapping. Their interaction can modify the Laplacian spectrum in ways that are not captured by analyses restricted to a single cycle or to specific relative cycle lengths. Moreover, the need to restore consensus without changing a globally prescribed velocity coupling parameter motivates the development of localized node and edge perturbation strategies.
+
+Accordingly, the research problem formulated in Problem~\ref{prob:multi_loop_coupling} also addresses the analytical characterization of interacting cycles and the development of decentralized consensus-restoration methodologies.
+
+\subsection{Root-Node Loops and Structural Singularity}
+\label{subsec:root_node_loop}
+
+An additional difficulty arises when a reverse communication edge enters the root node itself. Conventional polynomial-based spectral analysis techniques, often exploit the hierarchical structure of a directed chain in which the root node has zero in-degree, i.e., $d_{\mathrm{in},1}=0$. Under this condition, the root node acts as an autonomous leader that is unaffected by downstream feedback.
+
+When a reverse edge enters the root node itself ($x_1=1$), this hierarchical structure is no longer preserved. The root node acquires a nonzero in-degree, and the conventional leader-follower decomposition becomes inapplicable. In the particular cyclic configurations considered in this dissertation, the nodes within the directed cycle can no longer be treated using the original root-based hierarchy.
+
+The analysis in \cite{hao2019role} also encounters this difficulty. When the root node participates in the cycle, the polynomial spectral methods yield trivial solutions, such as $s_1=1$, and fail to provide conclusive stability bounds. Thus, the existing polynomial framework does not resolve the consensus problem for this class of root-node loop configurations.
+
+This leads to a distinct research problem:
+\begin{problem}
+When the root/leader node participates in a directed loop, the loss of its zero in-degree property invalidates the conventional root-based polynomial analysis and may lead to trivial characteristic solutions. Develop an analytical framework to characterize consensus stability in such configurations and formulate a decentralized strategy for restoring consensus without requiring global Laplacian spectral information or retuning the global velocity coupling parameter $\gamma$.
+\end{problem}
+
+\subsection{$\mathcal{H}_2$ Performance and Disturbance Attenuation in Cyclic Topologies}
+\label{subsec:h2_performance}
+
+Beyond deterministic convergence, real-world multi-agent networks operate in the presence of environmental disturbances, process noise, and sensor measurement errors. The $\mathcal{H}_2$ norm provides a measure of the total transient energy and stochastic disturbance amplification from exogenous inputs to network state deviations. Consequently, analyzing $\mathcal{H}_2$ performance is important not only for ensuring consensus but also for evaluating the quality of the resulting network response.
+
+For single-integrator networks, Zelazo and Mesbahi \cite{zelazo2010edge} developed an edge-agreement framework based on the edge Laplacian, enabling a reduced-order representation of network dynamics by eliminating the zero Laplacian eigenvalue. Zelazo et al. \cite{zelazo2013performance} subsequently used this framework to analyze the $\mathcal{H}_2$ performance of single-integrator networks over cyclic graphs. Their results established that the performance depends on cycle length and is invariant to the choice of spanning tree and the spatial location of the cycle.
+
+The performance of second-order networks under update delays and spectral variations has also been investigated by Huang and Siami \cite{huang2022role} and Oral et al. \cite{oral2017performance}. However, the $\mathcal{H}_2$ performance of double-integrator consensus networks over cyclic topologies remains comparatively under-explored. Unlike single-integrator systems, double-integrator agents possess coupled position and velocity dynamics. Therefore, the structural properties of the network may influence disturbance attenuation in ways that cannot be inferred directly from first-order results.
+
+In particular, the effects of cycle length, cycle placement relative to the root node, and structural overlap between multiple cycles on the $\mathcal{H}_2$ performance of double-integrator networks require further investigation.
+
+This motivates the following problem:
+\begin{problem}
+Derive closed-form expressions, wherever possible, for the $\mathcal{H}_2$ norm of consensus-seeking double-integrator networks over path graphs. Quantify how cycle length, spatial placement of cycles relative to the root node, and partial structural overlap between two cycles influence the overall $\mathcal{H}_2$ performance and disturbance attenuation capability of the network.
+\end{problem}
+
+\subsection{Impact-Angle and Impact-Time Constrained Guidance}
+\label{subsec:constrained_guidance}
+
+The application of control and coordination principles to autonomous interceptors and UAVs requires trajectory planning under kinematic and dynamic constraints. In particular, an interceptor may be required to satisfy terminal impact-angle and impact-time constraints while respecting physical limitations on lateral acceleration.
+
+In defense and aerospace applications, simultaneous satisfaction of these terminal constraints is important for coordinated engagements. Classical Proportional Navigation Guidance (PNG) \cite{SHNEYDOR1998101} and Pure Pursuit (PP) \cite{SHNEYDOR199847} are widely used for interception, but do not inherently enforce a prescribed terminal impact angle. Biased PNG laws \cite{kim1998BPNG} and optimal impact-angle guidance laws \cite{Ryoo, ratnoo2009state} have been proposed to address directional impact requirements. However, some of these approaches may exhibit command singularities or depend on time-to-go polynomial approximations.
+
+Several approaches have subsequently been developed to satisfy impact-angle and impact-time constraints:
+
+\begin{itemize}
+    \item \textbf{Sliding-Mode and Lyapunov Methods:}
+    Kumar et al. \cite{kumar2012sliding}, Tekin et al. \cite{Tekin2016_IT}, and Chen and Wang \cite{Chen2018JGCD} developed sliding-mode and Lyapunov-based guidance laws for impact-time and impact-angle control. Although these methods provide robustness, they may produce high-frequency chattering or large acceleration commands near terminal interception.
+
+    \item \textbf{Augmented Bias and Backstepping:}
+    Zhang et al. \cite{zhang2013terminal, Zhang2015} and Jung and Kim \cite{Jung2006} formulated impact-time and impact-angle guidance laws using linear-frame assumptions. However, their performance may deteriorate under large initial heading errors, particularly when $\theta_M\approx 90^\circ$.
+
+    \item \textbf{Geometric Trajectory Shaping:}
+    Hota and Ghose \cite{hota2009modified} utilized Dubins paths for UAV convergent line tracking. Standard Dubins paths, however, employ a fixed minimum turning radius $r_m$, which restricts the flexibility available for selecting the impact time or overall mission duration.
+
+    \item \textbf{Spiral Trajectory Synthesis:}
+    Tripathy and Shima \cite{tripathy2019archimedean} and Mishra et al. \cite{mishra2024spiral} introduced Archimedean spiral-based guidance laws for impact-angle control. Such trajectories inherently encode the desired impact angle and provide a geometric framework for trajectory shaping. Nevertheless, existing spiral guidance approaches do not necessarily guarantee feasibility under strict actuator constraints. For unfavorable initial engagement geometries, the required lateral acceleration may exceed the available limit, i.e., $|a_M|>a^{\max}$, potentially resulting in target miss.
+\end{itemize}
+
+These limitations motivate the development of guidance strategies that combine geometric trajectory synthesis with explicit consideration of physical acceleration constraints. In particular, there is a need for continuous-curvature trajectories that provide sufficient flexibility to satisfy prescribed spatial and temporal terminal conditions.
+
+The corresponding problem is formulated as follows:
+\begin{problem}
+Develop continuous-curvature and acceleration-bounded guidance strategies that guarantee simultaneous satisfaction of terminal impact-angle ($\zeta$) and impact-time ($t_{\mathrm{imp}}$) constraints for a single interceptor, while respecting the prescribed lateral acceleration limit. Extend the resulting trajectory-synthesis framework to multi-interceptor teams by incorporating suitable coordination mechanisms.
+\end{problem}
+
+\subsection{Cooperative Multi-Agent Guidance and Coordination}
+\label{subsec:cooperative_guidance}
+
+Cooperative interception extends the single-interceptor guidance problem by requiring multiple agents to coordinate their engagement trajectories. In addition to satisfying individual terminal conditions, the interceptors may need to arrive within a prescribed time window and approach the target from selected spatial directions or sectors.
+
+Several cooperative guidance approaches have been proposed to coordinate the impact time and impact geometry of multiple interceptors. Related studies include the cooperative terminal guidance strategies of Zhao et al. \cite{zhao2015terminal}, Park et al. \cite{park2013optimal}, and Chen and Wang \cite{Chen2018AST}. These approaches provide important foundations for multi-interceptor coordination. However, coordination requirements become more challenging when individual trajectories must also satisfy strict actuator constraints and when the interceptors are required to approach the target through different spatial sectors.
+
+In particular, centralized synchronization strategies may impose restrictive coordination requirements, while independently designed trajectories do not necessarily guarantee the desired spatial distribution of the interceptors. Furthermore, satisfying impact-time constraints alone does not ensure that all agents can realize their prescribed trajectories within available acceleration limits.
+
+Consensus-based coordination offers a potential framework for addressing these challenges by enabling agents to coordinate through localized interactions. Nevertheless, its integration with acceleration-bounded, impact-angle-constrained trajectory synthesis requires further investigation.
+
+This motivates the following problem:
+\begin{problem}
+Develop a cooperative multi-agent guidance framework that integrates feasible single-interceptor trajectory synthesis with consensus-based coordination. The framework should enable multiple interceptors to achieve coordinated impact while satisfying prescribed spatial-sector and temporal requirements, subject to individual acceleration constraints.
+\end{problem}
+
+\subsection{Summary of Identified Research Gaps} \label{subsec:summary_research_gaps}
+
+The preceding review identifies several unresolved challenges across the considered research domains. Table~\ref{tab:literature_gaps} summarizes the relevant state-of-the-art approaches, their limitations, and the research directions pursued in this dissertation.
+
+\begin{table}[ht!]
+\centering
+\caption{Summary of research gaps and corresponding directions addressed in this dissertation.}
+\label{tab:literature_gaps}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{
+|>{\raggedright\arraybackslash}p{2.8cm}
+|>{\raggedright\arraybackslash}X
+|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Research Domain} &
+\textbf{Identified Gap / Limitation} &
+\textbf{Research Direction} \\ \hline
+
+\textbf{Second-Order Directed Consensus} &
+The interaction of multiple directed cycles and their influence on the Laplacian spectrum and consensus stability are not fully characterized for general dual-loop configurations. &
+Analytical characterization of interacting directed cycles and their effect on the stability requirements of double-integrator consensus. \\ \hline
+
+\textbf{Decentralized Consensus Restoration} &
+Existing stability conditions may require global spectral information and network-wide retuning of the velocity coupling parameter. &
+Localized node and edge perturbation strategies to restore consensus under a fixed velocity coupling parameter. \\ \hline
+
+\textbf{Root-Node Loops} &
+Conventional polynomial spectral methods become inconclusive when the root node participates in a directed loop. &
+An analytical and decentralized framework for consensus restoration in root-node loop configurations. \\ \hline
+
+\textbf{Network $\mathcal{H}_2$ Performance} &
+The influence of cycle length, spatial placement, and structural overlap on the $\mathcal{H}_2$ performance of double-integrator networks over path graphs remains insufficiently understood. &
+Closed-form $\mathcal{H}_2$ characterization and analysis of structural factors governing disturbance attenuation. \\ \hline
+
+\textbf{Space-Time Guidance} &
+Existing guidance approaches may exhibit command singularities, restricted impact-time flexibility, or acceleration infeasibility. &
+Continuous-curvature, acceleration-bounded trajectory synthesis satisfying prescribed impact-angle and impact-time constraints. \\ \hline
+
+\textbf{Cooperative Coordination} &
+Coordinating spatial impact sectors and temporal requirements while respecting individual actuator constraints remains challenging. & Integration of feasible trajectory synthesis with consensus-based multi-agent coordination. \\ \hline
+\end{tabularx}
+\end{table}
+
+%\section{Literature Review and Identified Research Gaps}
+%This section reviews the state of the art in the four research domains addressed in this dissertation. The discussion identifies the limitations of existing approaches and establishes the research gaps motivating the present work.
+%\subsection{Consensus Protocols for High-Order Multi-Agent Systems}
+%The systematic study of consensus protocols— where a group of autonomous agents achieves agreement on a common state vector via localized interaction— began with foundational works on first-order (single-integrator) systems \cite{saber2003consensus, jadbabaie2003coordination, fax2004information, 1333204}. Olfati-Saber and Murray \cite{saber2003consensus} established the basic graph-theoretic framework for consensus over fixed and switching topologies, proving that convergence depends on the algebraic connectivity (the Fiedler value, $\lambda_2$) of the graph Laplacian. Moreau \cite{moreau2005stability} extended these results to time-dependent directed communication links using set-valued Lyapunov functions.
+
+%However, physical robotic platforms, UAVs, and mechanical actuators are governed by double-integrator dynamics where acceleration or force acts as the control input. Ren and Beard \cite{ren2005second} introduced second-order consensus protocols, demonstrating a fundamental difference between first- and second-order systems: while a directed spanning tree is necessary and sufficient for first-order consensus, it is only \emph{ necessary} for second-order consensus. Over a directed graph, double-integrator consensus can fail even in the presence of a directed spanning tree, due to the phase lag introduced by complex Laplacian eigenvalues.
+
+%Ren \cite{ren2008consensus} subsequently derived a sufficient condition for second-order consensus based on the real parts of the Laplacian spectrum, establishing that a positive velocity coupling gain $\gamma$ must be selected above a critical threshold. This formulation was further refined to handle practical constraints such as actuator saturation and velocity measurement unavailability \cite{ren2008consensus}. A major breakthrough was achieved by Yu et al. \cite{yu2010some}, who derived the exact \textbf{necessary and sufficient condition} for second-order consensus over directed graphs. Their analytical criterion proved that convergence depends on both the real and imaginary components of the Laplacian spectrum:
+%\begin{equation}\label{eq:ch1_nec_suf}
+%    \gamma > \max_{i \in \{2, \dots, N\}} \frac{|\mathfrak{Im}(\lambda_i)|}{|\lambda_i|} \sqrt{\frac{1}{\mathfrak{Re}(\lambda_i)}}
+%\end{equation}
+%Despite these analytical advancements, existing double-integrator control laws assume global knowledge, such as that of the Laplacian spectrum, available with every agent. When structural changes occur in a network, existing approaches require every agent in the network to access information about the graph eigenvalues and re-tune their velocity coupling parameter $\gamma$ globally. Existing results in the literature lack decentralized, localized tuning/re-tuning methods that allow agents on modified edges to restore stability locally without requiring global network re-tuning.
+
+%\subsection{Cyclic Directed Networks and Spectral Instability}
+%Feedback loops and directed cycles occur naturally in networked physical systems due to bidirectional links, spatial proximity, and multi-tiered communication architectures. In single-integrator networks, the inclusion of reverse edges creating directed loops merely degrades the convergence rate to consensus by reducing algebraic connectivity, but never induces dynamic instability. 
+
+%The spectral properties of weighted digraphs and cyclic graphs have been investigated from various perspectives \cite{mukherjee2016consensus, mukherjee2013reachability, mukherjee2021finite}. Zhang et al. \cite{zhang2017effect} analyzed the effect of adding a reverse edge across a stem in a directed acyclic graph (DAG) for single integrators, concluding that convergence degradation is dictated exclusively by the subgraph encompassing the directed cycle and remains invariant to total network size or cycle location. Mo et al. \cite{mo2019effects} expanded this analysis to consider reverse edges across stems in DAGs.
+
+%For chain networks containing dual reverse edges, Hao et al. \cite{hao2019role} evaluated the dominant convergence root of single-integrator consensus, establishing polynomial equations to estimate eigenvalue shifts. However, the analytical framework in \cite{hao2019role} suffers from two major limitations:
+%\begin{itemize}
+%    \item \textbf{Topological Restrictions:} Their derivations are valid only when the lengths of the two cycles, induced by the addition of two reverse-edges, differ by at least 1 ($|l_1 - l_2| \ge 1$) and when the longer cycle is located strictly closer to the root node.
+%    \item \textbf{Root-Node Loop Failure:} When a reverse edge enters the root node itself ($x_1 = 1$), the polynomial spectral methods fail to yield any conclusive answers. Because the root node loses its zero in-degree property ($d_{\text{in},1} > 0$), every node within the cycle effectively transforms into an equivalent root node. In such a set-up, the relevant characteristic equations of interest yield trivial solutions ($s_1 = 1$), thereby rendering the proposed polynomial methods unable to provide any bounds on the velocity coupling factor.
+%\end{itemize}
+
+%Resolving consensus breakdown when the leader/root node is embedded in a feedback loop— a structural singularity that destroys traditional leader-follower hierarchies— remains an unaddressed problem in the literature.
+
+%\subsection{$\mathcal{H}_2$ Performance and Disturbance Attenuation in Networked Systems}
+Beyond deterministic convergence, real-world multi-agent networks operate under process noise and measurement disturbances. To quantify stochastic noise amplification, researchers employ system norm performance metrics, specifically the $\mathcal{H}_2$ and $\mathcal{H}_\infty$ norms.
+
+Zelazo and Mesbahi \cite{zelazo2010edge} developed an edge-agreement framework using the edge Laplacian ($\mathcal{L}_e = E^T E$), enabling reduced-order realization of network dynamics by eliminating the zero Laplacian eigenvalue. Zelazo et al. \cite{zelazo2013performance} utilized this framework to analyze the $\mathcal{H}_2$ performance of single-integrator networks over cyclic graphs. Their fundamental conclusion was that for first-order agents, $\mathcal{H}_2$ performance depends strictly on cycle length and is completely invariant to the choice of spanning tree or the spatial location of the cycle in the graph.
+
+The performance of second-order networks under update delays and spectral variations has been studied by Huang and Siami \cite{huang2022role} and Oral et al. \cite{oral2017performance}. However, the $\mathcal{H}_2$ performance of double-integrator networks over cyclic topologies remains under-explored. Unlike single-integrators, second-order agents possess coupled position and velocity dynamics. Consequently, fundamental questions regarding how cycle length, spatial loop placement relative to the root node, and partial structural overlap between dual loops affect $\mathcal{H}_2$ performance in second-order networks remain open questions.
+
+%\subsection{Impact-Angle and Impact-Time Constrained Guidance Laws}
+Translating graph theory-aided consensus protocols to physical robotic platforms and autonomous UAVs/interceptors requires trajectory planning under non-holonomic constraints, limited speed, and saturated lateral acceleration ($|a_M| \le a^{\text{max}}$).
+
+In defense and aerospace applications, cooperative engagements require satisfying two terminal constraints simultaneously: exact impact time ($t_{\text{imp}}$) to saturate close-in weapon systems (CIWS), and exact impact angle ($\zeta$) to maximize directional warhead penetration. 
+
+Classical Proportional Navigation Guidance (PNG) \cite{SHNEYDOR1998101} and Pure Pursuit (PP) \cite{SHNEYDOR199847} guarantee interception but cannot enforce terminal impact angles without demanding excessive terminal acceleration. Biased PNG laws \cite{kim1998BPNG} and optimal impact-angle guidance laws \cite{Ryoo, ratnoo2009state} attempt to enforce directional constraints but often exhibit command singularities or require time-to-go polynomial approximations.
+
+To satisfy simultaneous impact-angle and impact-time constraints, several strategies have been proposed:
+\begin{itemize}
+    \item Sliding Mode and Lyapunov Methods: Kumar et al. \cite{kumar2012sliding}, Tekin et al. \cite{Tekin2016_IT}, and Chen \& Wang \cite{Chen2018JGCD} developed sliding-mode and Lyapunov-based guidance laws for time and angle control. While robust, these methods typically produce high-frequency chatter or severe acceleration spikes near terminal intercept.
+    \item Augmented Bias and Backstepping: Zhang et al. \cite{zhang2013terminal, Zhang2015} and Jung \& Kim \cite{Jung2006} formulated impact time and angle guidance laws using linear frame assumptions. However, these methods deteriorate under large initial heading errors ($\theta_M \approx 90^\circ$).
+    \item Geometric Trajectory Shaping: Hota and Ghose \cite{hota2009modified} utilized Dubins paths for UAV convergent line tracking. However, standard Dubins paths use fixed minimum turn radii ($r_m$), resulting in rather inflexible values of impact time when implemented.
+    \item Spiral Trajectory Synthesis: Tripathy and Shima \cite{tripathy2019archimedean} and Mishra et al. \cite{mishra2024spiral} introduced Archimedean spiral guidance laws for impact-angle control. Spirals inherently encode the desired impact angle while providing smooth curvature decay. However, existing spiral guidance laws do not guarantee feasibility under strict actuator limits ($|a_M| \le a^{\text{max}}$); if initial engagement geometry is unfavorable, standard spiral laws demand unachievable lateral acceleration, leading to target miss.
+\end{itemize}
+%\subsection{Summary of Identified Gaps in the Literature}
+%The literature review identifies the following research gaps across the four domains considered in this dissertation.
+%\begin{table}[ht!]
+%\centering
+%\caption{Summary of identified research gaps.}
+%\label{tab:literature_gaps}
+%\renewcommand{\arraystretch}{1.3}
+
+%\begin{tabularx}{\textwidth}{
+%    |>{\raggedright\arraybackslash}p{3cm}
+%    |>{\raggedright\arraybackslash}X
+%|}
+%\hline
+%\textbf{Research Domain} &
+%\textbf{Identified Research Gap} \\
+%1\hline
+
+%\textbf{Second-Order Directed Consensus} &
+%Decentralized consensus restoration under interacting directed cycles, particularly when the root node is embedded within a feedback loop, without requiring global spectral information or global gain retuning.
+%\\
+%\hline
+
+%\textbf{Network $\mathcal{H}_2$ Performance} &
+% Understanding how cycle length, spatial placement relative to the root node, and structural overlap influence the $\mathcal{H}_2$ performance of double-integrator networks.
+%\\
+%\hline
+
+%\textbf{Space-Time Guidance} & Feasible trajectory synthesis satisfying simultaneous impact-angle and impact-time constraints under lateral acceleration limitations.
+%\\
+%\hline
+
+%\textbf{Cooperative Coordination} &
+%Extending feasible trajectory generation to multi-agent interception while satisfying spatial coordination and acceleration constraints.
+%\\
+%\hline
+
+%\end{tabularx}
+%\end{table}
+
+
+\section{Research Objectives and Scope}
+The overarching objective of this dissertation is to develop
+analytical and design methodologies for the stability,
+performance, and application of networked dynamical systems.
+The specific research objectives are:
+\begin{itemize}
+
+    \item \textbf{Objective 1 -- Loop Bound Characterization:}
+    Derive exact analytical characteristic equations and
+    velocity coupling bounds for double-integrator
+    multi-agent systems operating over directed chain
+    topologies with two interacting reverse edges across
+    different topological overlap configurations.
+
+    \item \textbf{Objective 2 -- Decentralized Local Consensus
+    Restoration:}
+    Develop local node-scaling, edge-scaling, and combined
+    perturbation strategies that guarantee second-order
+    consensus for a fixed velocity coupling parameter
+    $\gamma$, without requiring global spectral information.
+    Develop a root-locus-based design framework to address
+    root-node loop configurations.
+
+    \item \textbf{Objective 3 -- $\mathcal{H}_2$ Performance
+    Analysis:}
+    Derive closed-form expressions for the $\mathcal{H}_2$
+    norm of second-order agent networks over path graphs.
+    Characterize the influence of cycle length, spatial
+    positioning relative to the root node, and structural
+    overlap between two cycles on disturbance attenuation.
+
+    \item \textbf{Objective 4 -- Space-Time Dubins Trajectory
+    Synthesis:}
+    Design a Dubins-type guidance law using piecewise-constant
+    lateral acceleration profiles to satisfy simultaneous
+    impact-angle and impact-time constraints under prescribed
+    lateral acceleration limits.
+
+    \item \textbf{Objective 5 -- Continuous-Curvature Spiral
+    Guidance and Swarm Coordination:}
+    Develop an adaptive Archimedean spiral guidance strategy
+    that ensures curvature feasibility under actuator
+    saturation. Extend the trajectory generation framework
+    to multi-agent systems using consensus protocols for
+    coordinated interception.
+
+\end{itemize}
+
+
+
+\section{Thesis Contributions and Novelty}
+The primary analytical and application-oriented contributions of this thesis are summarized as follows:
+\begin{itemize}
+    \item \textbf{Dual-Loop Spectral Characterization in Directed Chains:} We establish exact univariate polynomial equations that dictate the dominant Laplacian convergence root $s_1 = 1 - \lambda_2$ across six distinct topological configurations of dual reverse edges. We prove that adding a cycle of length $l$ alters $l+1$ eigenvalues when the root node is excluded, but only $l$ eigenvalues when the root node is included.
+    \item \textbf{Local Decentralized Perturbation Framework (Leader-Exterior Loops):} We introduce Gershgorin-disc-based Node Scaling, Edge Scaling, and Combined Scaling methods. By constructing Arithmetic Progressions (AP) of disc centers, these strategies guarantee second-order consensus for any predesigned coupling gain $\gamma$ through localized modifications confined strictly to loop edges and nodes.
+    \item \textbf{Resolution of the Root-Node Loop Structural Singularity:} We provide the first framework in the literature to resolve consensus breakdown when the leader node is inside a feedback loop. Using a complementary root-locus formulation wherein a relevant transfer function of the form $G(s) = \frac{\beta_{RL}\{(s-\alpha_{RL})^l - (-\alpha_{RL})^l\}}{s(s-\alpha_{RL})^l}$ is used, we derive precise gain bounds that preserve stability. Furthermore, we prove that an equal-weight cyclic pursuit design ($\alpha_{RL} \ge \frac{\cot^2(\pi/(l+1))}{2\gamma^2}$) guarantees consensus without requiring edge weakening.
+    \item \textbf{Closed-Form $\mathcal{H}_2$ Performance Expressions and Structural Guidelines:} We derive exact closed-form expressions for the $\mathcal{H}_2$ norm of double-integrator networks over path graphs. We prove that: 
+        \begin{itemize}
+            \item Double integrators inherently exhibit higher noise sensitivity than single integrators, but increasing velocity coupling ($\gamma$) monotonically improves $\mathcal{H}_2$ performance.
+            \item Placing a single cycle at the spatial center of a path graph ($n_c = \frac{n+1}{2}$) minimizes the effects of noise.
+            \item For two loops/cycles, partial overlap between cycles ($s > 0$) strictly improves $\mathcal{H}_2$ performance, compared to non-overlapping loop configurations.
+        \end{itemize}
+    \item \textbf{Dubins Type Path Based Space-Time Guidance Scheme:} We design a piecewise-constant acceleration guidance law that modulates a virtual design circle radius $r_d \in [r_m, r_{\text{crit}}^{\text{TCT}}]$ to hit simultaneous terminal impact angle and impact time constraints. We eliminate upper impact-time bounds by introducing a mirrored launch configuration. 
+    \item \textbf{Feasibility-Seeking Archimedean Spiral Guidance and Cooperative Control:} We formulate a two-phase guidance strategy that dynamically adapts the spiral parameter $\alpha$ via $\dot{\alpha} = K_p(\alpha_{\text{ref}} - \alpha)$ to guarantee curvature feasibility under actuator saturation ($a^{\text{max}}$). By coupling spiral parameter generation with directed graph consensus ($\alpha_i \to \alpha_{\text{ref}}$), we achieve coordinated multi-agent interception across prescribed spatial impact sectors.
+\end{itemize}
+
+
+\section{Thesis Organization and Outline}\label{sec:thesis_organization}
+This dissertation is organized into the following chapters, structured to systematically bridge consensus based on algebraic graph theory, and performance optimization based on system theory, with physical trajectory synthesis for constrained autonomous systems. The primary analytical and application-oriented contributions of this dissertation are summarized as follows:
+:
+
+\begin{itemize}
+    \item \textbf{Chapter \ref{ch:intro}: Mathematical Preliminaries and Fundamental Concepts} \\
+    This chapter establishes the foundational mathematical framework used throughout the dissertation. This includes algebraic graph theory (adjacency, in-degree, and Laplacian matrices, topological ordering, incidence matrix factorizations, and reduced edge Laplacians), dynamical agent models (second-order/double-integrator dynamics, Kronecker state-space formulations, and classical stability criteria), planar non-holonomic engagement kinematics, and geometric curve primitives (Dubins circles and Archimedean spirals).
+    
+    \item \textbf{Chapter \ref{ch:TwoReverseEdges}: Consensus Analysis of Dual Loops in Directed Networks } \\
+    Next, this chapter investigates the spectral impact of reverse edges added across directed chain networks of double integrators. Exact characteristic polynomial equations and dominant convergence roots are derived across six topological configurations of two reverse edges. The structural singularity that occurs when the root/leader node is embedded within a directed cycle is formally characterized.
+    \item \textbf{Chapter \ref{ch:Guaranteed_Consensus}: Guaranteed Consensus via Edge-Weight Perturbation in Directed Loop Topologies}
+    This chapter presents detailed derivations for dual-loop spectral bounds, characterizes the root-node loop structural singularity, and details decentralized node-scaling, edge-scaling, combined scaling, and root-locus based remedies. To resolve consensus breakdown without global spectrum re-computation, localized node-scaling, edge-scaling, combined scaling, and root-locus based remedies are proposed.
+    \item \textbf{Chapter \ref{ch:Robustness_Analysis}: $\mathcal{H}_2$ Performance Analysis of Cyclic Network Topologies} \\
+    This chapter evaluates systematic disturbance rejection and stochastic noise amplification in networks of consensus-seeking double integrators, specifically over directed path graphs, under process and measurement noise. Utilizing reduced-order edge dynamics ($\Sigma_{e\tau}$), exact closed-form Lyapunov solutions relevant for evaluating the $\mathcal{H}_2$ norm are derived. Quantitative structural guidelines are established, proving that spatial loop centering and partial overlap between two loops aid in optimizing the $\mathcal{H}_2$ performance.
+    
+    \item \textbf{Chapter \ref{ch:Dubins_Path}: Trajectory Planning Using Dubins-like Paths Under Impact Constraints} \\
+    In this chapter, we present a space-time trajectory generation strategy for autonomous interceptors, subject to non-holonomic constraints, lateral acceleration bounds ($|a_M| \le a^{\text{max}}$), and simultaneous terminal impact-angle ($\theta_t$) and impact-time ($t_{\text{imp}}$) constraints. Modulating a virtual design circle radius ($r_d$) generates piecewise-constant acceleration profiles with closed-loop realizability, while a mirrored launch geometry eliminates upper bounds on achievable impact-time values.
+    
+    \item \textbf{Chapter \ref{ch:Spiral_Path}: Archimedean Spiral Guidance and Cooperative Multi-Agent Interception} \\
+    This chapter formulates a continuous-curvature, two-phase Archimedean spiral guidance law that dynamically adapts a spiral parameter, $\alpha$, to guarantee feasibility prior to terminal tracking, while preventing actuator saturation. This synthesis is subsequently extended to a group of multi-interceptors by coupling spiral trajectory generation with a directed consensus in spiral scaling parameters ($\alpha_i \to \alpha_{\text{ref}}$), achieving coordinated interception across prescribed spatial sectors.
+    
+    \item \textbf{Chapter \ref{ch:conclusion}: Conclusions and Future Research Directions} \\
+    Finally, this chapter summarizes the key theoretical contributions, algebraic graph-theoretic insights, and motion control methodologies developed in this dissertation, and highlights practical deployment considerations for vehicular swarms, while laying out promising avenues for future research.
+\end{itemize}

@@ -1,0 +1,210 @@
+% prelude.tex
+%   - titlepage
+%   - dedication (optional)
+%   - approval sheet
+%   - course certificate
+%   - table of contents, list of tables and list of figures
+%   - nomenclature
+%   - abstract
+%============================================================================
+\clearpage 
+\pagenumbering{roman}
+% TITLE PAGE
+\title{Analysis \& Synthesis of Networked Dynamical Systems: Stability, Performance and Applications of Consensus}
+\author{Avinash Kumar Dubey}
+\date{\today}
+\rollnum{184076010}
+\iitbdegree{Doctor of Philosophy}
+%   - The default report type is preliminary report; for a PhD thesis, specify \thesis
+\thesis
+\department{DEPARTMENT OF ELECTRICAL ENGINEERING}
+%    - Set the guide's name
+%    - Set the coguide's name (if you have one)
+\setguide{Prof. Dwaipayan Mukherjee}
+% \setcoguide{Prof. Kavi Arya}
+%   - once the above are defined, use \maketitle to generate the titlepage
+\maketitle
+% DEDICATION.....
+\cleardoublepage
+\chapter*{Acknowledgements}
+\markboth{ACKNOWLEDGEMENTS}{}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+\thispagestyle{plain}
+\raggedbottom
+%\begin{dedication}
+First and foremost, I express my deepest and most sincere gratitude to my guide, \textbf{Prof. Dwaipayan Mukherjee}. Beyond his intellectual leadership and technical insights, I am profoundly indebted to him for his unwavering patience, empathy, and support throughout my PhD. During phases when I fell short of expectations or faced significant setbacks, he provided essential financial support, granted crucial extensions, and offered gentle moral guidance to steer me back on track. His continuous faith in my potential when I doubted myself was the single most defining factor in seeing this thesis to completion.
+
+I am profoundly grateful to \textbf{Prof. Kavi Arya} (Department of Computer Science Engineering), my co-guide and Principal Investigator during my time as a project staff at \textbf{e-Yantra}—a Ministry of Education sponsored robotics outreach initiative at IIT Bombay. My research journey began here, and the initial financial support and exposure provided by e-Yantra played a pivotal role in laying the foundation of my doctoral studies. 
+
+I extend my sincere thanks to \textbf{Prof. Shashi Ranjan Kumar} (Department of Aerospace Engineering), Principal Investigator of the DRDO-sponsored project, \textit{``Multi-Vehicular Cooperative Pursuit and Evasion Guidance Strategies: Multi-Agent Perspective.''} Working on this project was instrumental in shaping the cooperative guidance and trajectory synthesis frameworks presented in this thesis.
+
+I am thankful to \textbf{Prof. Harish K. Pillai}, Head of the Department of Electrical Engineering, for providing excellent departmental facilities and academic support. I also express my gratitude to \textbf{Prof. Debasattam Pal} and \textbf{Prof. Debraj Chakraborty}, with whom I had the privilege of working as a Teaching Assistant for various systems and control courses; those teaching experiences greatly enriched my understanding of foundational control theory.
+
+My sincere thanks go to \textbf{IIT Bombay} as an institution for providing a world-class research environment, state-of-the-art infrastructure, and generous conference funding that enabled me to present my research at international forums.
+
+I extend my heartfelt appreciation to my colleagues at e-Yantra, as well as my labmates at the Control and Computing Lab, for fostering a vibrant, collaborative, and intellectually stimulating environment. Special thanks go to my B.Tech. colleagues and dear friends, \textbf{Sachin Sharma} and \textbf{Jagadish Prajapati}, who stood by me both as steadfast friends and as fellow research scientists throughout this journey.
+
+No words can adequately express my gratitude to my family, whose unconditional love, sacrifices, and belief in me kept me going through academically and financially challenging times:
+\begin{itemize}
+    \item To my beloved wife, \textbf{Shweta Pathak}, and my daughter, \textbf{Avisha Dubey}, who patiently shared and weathered the toughest phases of this journey with immense resilience and affection.
+    \item To my sister, \textbf{Aradhana Dubey}, and my brother, \textbf{Avanish Dubey}, who repeatedly provided essential emotional and financial backing whenever needed.
+    \item To my \textbf{Parents}, whose constant prayers, motivation, and silent sacrifices have been the ultimate driving force behind all my accomplishments.
+\end{itemize}
+\vspace{1.5em}
+\begin{flushright}
+\textit{Avinash Kumar Dubey}
+\end{flushright}
+%\end{dedication}
+%--------------------------------------------------------------------%
+% APPROVAL SHEET
+%   - for final thesis, you need Approval Sheet. So, uncomment the make approval command.
+%     it should come after dedication, if dedication is
+%     present. Otherwise it is the first page after title page.
+\makeapproval
+%--------------------------------------------------------------------%
+% CERTIFICATE OF COURSE WORK
+%   - for final thesis, a course certificate is required.
+%   - specify the  PhD joining date for the certificate.
+%     Contact you department office or academic office if you do not
+%     know it.
+\joiningdate{12th July, 2018}
+\begin{coursecertificate}
+%  - command to add a course
+%     it accepts 3 arguments:  Course ID, Course Name, Course Credits.
+\addcourse{EE 635}{Applied Linear Algebra}{6}
+\addcourse{EE 640}{Multivariable Control Systems}{6}
+\addcourse{EE 615}{Control and Computational Laboratory}{6}
+\addcourse{EE 749}{Decentralized Control of Complex Systems}{6}
+%\addcourse{}{}{6}
+%\addcourse{}{}{6}
+%\addcourse{}{}{6}
+\addcourse{EES 801}{Seminar}{4}
+%\addcourse{}{}{4}
+%\addppcourse: required for courses like HS 699 for which Acad office
+%              requires PP, and not the actual credits.
+%     3 arguments:  Course ID, Course Name, Course Grade(PP/NP).
+\addppcourse{HS 791}{Communication Skills-I}{PP}
+\addppcourse{EE 792 (S3)}{Communication Skills-II}{PP}
+\addppcourse{GC 101}{Gender in the workplace}{PP}
+\end{coursecertificate}
+%DECLARATION;
+\makedeclaration
+%--------------------------------------------------------------------%
+% COPYRIGHT PAGE;
+\copyrightpage
+%--------------------------------------------------------------------%
+% ABSTRACT
+\begin{abstract}
+\raggedbottom
+This thesis investigates consensus in networked dynamical systems with a primary emphasis on the structural influence of directed cycles on system stability, performance bounds, and subsequent trajectory synthesis. Networked multi-agent systems operating over topologies with directed feedback structures exhibit complex dynamical behaviors that frequently defy classical graph-theoretic consensus guarantees. For agents modelled as single-integrators, the introduction of reverse edges, leading to directed cycle formation, degrades the convergence rate to consensus when a directed spanning tree already exists. In contrast, for second-order agent dynamics, the presence of directed cycles can induce severe structural instabilities, leading to a complete breakdown of consensus despite the presence of a spanning tree. This instability originates from the stringent lower bound required on the velocity coupling gain, denoted by $\gamma$, which is introduced by reverse-edge feedback channels.
+
+Existing polynomial-based Laplacian spectral analysis techniques enable the estimation of admissible bounds on this coupling gain $\gamma$ without explicitly computing the exact graph Laplacian spectrum; however, these analytical methods are restricted to configurations where the root or leader node remains strictly outside the directed cycle formed by the additional reverse edges. When the leader node itself participates in the directed cycle formation, traditional polynomial approaches fail entirely in providing reliable stability margins. This is because such a scenario causes a fundamental structural collapse in the graph hierarchy, effectively converting all nodes within the cycle consisting the root into co-equal/equivalent root nodes-- a situation that has historically remained unaddressed in the literature. To address this issue, this thesis first investigates the interplay of multiple directed loops, specifically analyzing how the addition of a secondary directed cycle modifies the mathematical bounds on the velocity coupling factor. Building upon these bounds, we propose a novel, decentralized edge perturbation method targeted directly at the edges within and immediately surrounding the directed loops. This edge perturbation strategy guarantees consensus for any pre-designed coupling gain $\gamma$. The key advantage of this framework is twofold: first, the required perturbations are strictly localized to the loop structure, ensuring no interference with the remainder of the network, or requirement of any global parameter tuning by any of the agent. Second, by utilizing a root-locus-based analytical framework, the methodology ensures stability guarantees even when the leader node actively participates in the loop structure.
+
+Moving beyond stability, the thesis extends into performance optimization by examining the structural role of cycles in networks of double-integrators from an $\mathcal{H}_2$ norm perspective. While cycles are well known to alter the algebraic connectivity (Fiedler eigenvalue) and convergence rate, their precise impact on systemic performance metrics such as disturbance attenuation remains under-explored. Using an undirected path graph as the nominal spanning tree, we systematically evaluate the $\mathcal{H}_2$ performance of networks containing up to two cycles. It is formally demonstrated that $\mathcal{H}_2$ performance fundamentally depends on the underlying spanning tree topology, the spatial length of the cycles, their relative overlap, and, crucially, their absolute spatial placement relative to the root node. In particular, our performance analysis reveals that longer cycles exhibiting partial structural overlap can yield significantly improved $\mathcal{H}_2$ disturbance rejection compared to non-overlapping loop configurations. We characterize the extent of overlap that optimizes performance, thereby providing explicit structural guidelines for designing robust network architectures for agents modelled as double integrators.
+
+Finally, applying the idea of consensus to the domain of cooperative interception problems, the thesis presents a dual-stage trajectory planning framework for autonomous agents, subject to non-holonomic constraints, lateral acceleration bounds, and strict terminal impact-angle and impact-time constraints. We first develop a Dubins-type path planning strategy that satisfies simultaneous space-time impact requirements by systematically modulating the radius of a virtual circle. The admissible bounds of this designed radius is analytically characterized as a function of the initial engagement geometry, providing simulation-backed design guarantees for unique path synthesis. The Dubins-type guidance law requires only piecewise-constant lateral acceleration over distinct engagement phases, rendering it highly attractive for implementation. To address the physical rigidity and curvature discontinuities inherent in fixed-radius Dubins-type paths, we introduce an Archimedean spiral-based path planning methodology. By exploiting the additional degree of freedom inherent in Archimedean spirals through an additional parameter, this strategy enables continuous curvature variation, substantially enlarging the feasible solution space, and also improving robustness under tight lateral acceleration bounds.The synthesis is ultimately extended to multi-agent interception scenarios by coupling the spiral trajectory generator with decentralized consensus protocols. The resulting unified framework leverages the idea of consensus and cooperative guidance design, thereby providing both stability guarantees and practical trajectory synthesis algorithms for coordinated autonomous operations.
+\end{abstract}
+
+%--------------------------------------------------------------------%
+%% CONTENTS, TABLES, FIGURES
+\tableofcontents
+\listoftables
+\listoffigures
+
+%%--------------------------------------------------------------------%
+%% NOMENCLATURE
+%%\begin{nomenclature}
+%
+%%\end{nomenclature}
+%%\printnomenclature
+%%--------------------------------------------------------------------%
+ \cleardoublepage
+ \chapter*{List of Symbols}
+ \markboth{LIST OF SYMBOLS}{} % Display in header
+ \addcontentsline{toc}{chapter}{List of Symbols} % Display text in Table of content
+\thispagestyle{plain}
+
+\begin{enumerate}
+    \item {\bf General Notations}\\
+        \begin{tabular}{cll}
+             $\Nat$	&:&	The set of natural numbers including zero, that is \\
+             & & $\{0, 1, 2, \hdots \}$. \\
+             $\R$ &:& The field of real numbers. \\
+             $\R_{+}$ &:& The set of non-negative real numbers.\\
+             $\mb{C}$		&:& The field of complex numbers. \\
+             $I_{\n}$ &:& The ${\n} \times {\n}$ identity matrix.\\
+             $0_{{\n},{\m}}$ &:& An ${\n} \times {\m}$ matrix with all entries zero.\\
+             ${\tt det}(A)$ &:& The determinant of a square matrix $A$.\\
+             ${\sigma}(A)$ &:& The set of eigenvalues of a square matrix $A$ (with an\\
+             & & eigenvalue  $\lambda$ included in the set as many times as its\\
+             & & algebraic multiplicity).\\
+             ${\tt rank}(A)$ &:& The rank of a matrix $A$.\\
+             ${\tt img\,}A$ &:& The image of a matrix $A$.\\
+             ${\tt ker\,}A$ &:& The nullspace of a matrix $A$\\
+             $\Rnp$	&:& The set of ${\n} \times {\p}$ matrices with elements from $\R$.\\
+             $\bullet$ &:& A dimension which is not specified: for example, $\R^{{\w} \times \bullet}$ \\
+             & & denotes the set of real constant matrices having ${\w}$ rows\\
+             & & and an unspecified number of columns.\\
+    \end{tabular}
+    \item {\bf Agent Dynamics \& Consensus Protocols}\\
+        \begin{tabular}{cll}
+        	$p_i(t) \in \mathbb{R}^d, v_i(t) \in \mathbb{R}^d$ &:& Position and velocity vectors \\
+            & & of agent $i$ in $d$-dimensional space.\\
+            $p(t) = [p_1^T, \dots, p_N^T]^T$ &:& Stacked network position vectors.\\
+            $v(t) = [v_1^T, \dots, v_N^T]^T$ &:& Stacked network velocity vectors.\\
+            $u_i(t) \in \mathbb{R}^d$ &:& Control input (force/acceleration) to agent $i$. \\
+            $\hat{\mathcal{L}} = \begin{bmatrix} 0_{N \times N} & \mathcal{I}_N \\ -\mathcal{L} & -\gamma \mathcal{L} \end{bmatrix}$ &:& System matrix for the double-integrator network. \\
+            $P = \text{diag}(p_1, p_2, \dots, p_{l+1})$ &:& Diagonal matrix of node-scaling parameters. \\
+            $w_i$ &:& Weight of forward edges in/adjacent to a loop.\\
+            $w_r$ &:& Weight of the reverse edge forming directed cycle. \\
+            $\alpha_{RL}, \beta_{RL}$ &:& Root-locus design scaling parameters. \\
+            $\alpha, \beta$: &:& Archimedean spiral parameters.\\
+    \end{tabular}
+    \newpage
+    \item {\bf Graph Theory \& Network Topologies} \\
+        \begin{tabular}{cll}
+        	$\G = (\Vg,\Eg,\Wg)$    &:& Directed or undirected graph $\G$ with vertex set $\Vg$, \\
+                                    & & edge set $\Eg$, and weighted adjacency matrix $\Wg$.\\
+            $N = |\Vg|$             &:& Total number of agents/nodes in the network. \\
+            $e = |\Eg|$             &:& Total number of edges in the network. \\
+            $E(\G) \in \R^{N \times e}$ &:& Incidence matrix of the graph with $N$ agents and $e$ edges. \\
+            $\Dg$                   &:& Degree matrix of the graph. \\
+            $\mathcal{L}$ &:& Graph Laplacian matrix ($\mathcal{L} = \Dg - \Wg$) of the graph $\G$.\\
+            $\lambda(i)$ or $\lambda_i$ &:& $i^{th}$ eigenvalue of the Laplacian $\mathcal{L}$, ordered by real parts \\
+            & & ($0 = \lambda_1 \le \mathfrak{Re}(\lambda_2) \le \dots \le \mathfrak{Re}(\lambda_N)$). \\
+            $\gamma$ &:& Velocity coupling parameter/gain in \\
+            & & second-order consensus protocols.\\
+            $\ell$ &:& Cycle length, defined as $l = y - x$ \\
+            & & (where $y$ is the tail node and $x$ is the head node \\
+            & & of a reverse edge in a topologically ordered network).\\
+            $\etree \in \R^{N \times (N-1)}$ &:& Incidence matrix corresponding to the spanning tree \\ %of the graph. \\
+            $\etreein \in \R^{N \times (N-1)}$ &:&  In-incidence matrix corresponding to the spanning tree \\ %of the graph. \\
+            $\lntree = \etree\etree^T$ &:&  Reduced tree node Laplacian matrix. \\
+            $\lntreein = \etreein\etreein^T$ &:&  Reduced tree node In-Laplacian matrix. \\
+            $\letree = \etree^T\etree$ &:&  Reduced tree edge Laplacian matrix. \\
+            $\letreein = \etreein^T\etreein$ &:&  Reduced tree edge In-Laplacian matrix. \\       
+    \end{tabular}
+    \item {\bf Kinematics, Guidance \& Trajectory Synthesis}\\
+        \begin{tabular}{cll}
+        $(x_p, y_p)$ or $(x_i, y_i)$ &:& Cartesian position of pursuer/interceptor $i$.\\
+        $(x_t, y_t)$ &:& Cartesian position of stationary target.\\
+        $V_M$ or $v_p$ &:& Interceptor speed (kept constant).\\
+        $a_M$ or $a_p$ &:& Lateral acceleration control command ($\vert{}a_M\vert{} \le a^{\text{max}}$).\\
+        $\gamma_M$ or $\gamma_p$ &:& Interceptor flight path / heading angle.\\
+        $\theta$ or $\lambda_p$ &:& Line-Of-Sight (LOS) angle.\\
+        $\theta_M$ or $\delta_p$ &:& Lead angle ($\delta_p = \gamma_p - \lambda_p$).\\
+        $\theta_t$ or $\zeta$ &:& Terminal impact angle constraint.\\
+        $t_{\text{imp}}$ or $t^*$ &:& Desired terminal impact time constraint.\\
+        $r_m$ &:& Minimum turn radius ($r_m = V_M^2 / a^{\text{max}}$).\\
+        $r_d$ &:& Virtual design circle radius for Dubins path modulation.\\
+        $r(\lambda) = \alpha(\lambda - \zeta)^\beta$ &:& Archimedean spiral parameterization.\\
+        $\alpha_{\text{ref}}$ &:& Minimum feasible spiral scaling parameter \\
+        & & ensuring $\vert{}a_p\vert{} \le a^{\text{max}}$.\\
+        \end{tabular}
+\end{enumerate}
+%\thispagestyle{fancy} % if want header on current page
+%\pagestyle{empty}
+%%%--------------------------------------------------------------------%
+\cleardoublepage
+\pagenumbering{arabic}
+%\pagestyle{plain} %headers won't appear in book style. 

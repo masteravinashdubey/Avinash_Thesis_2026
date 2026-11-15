@@ -1,0 +1,233 @@
+\newcommand{\ph}{\phantom{-}}
+\newcommand{\F}{\mathscr{F}}
+\newcommand{\bv}{\boldsymbol{v}}
+\newcommand{\Fold}{F_{\rm old}}
+\newcommand{\Fnew}{F_{\rm new}}
+\newcommand{\ddt}{\frac{d}{dt}}
+\newcommand\norm[1]{\left\lVert#1\right\rVert}
+\newcommand{\Bfull}{\ensuremath{\mathfrak{B}_{\rm full}} }
+\newcommand{\diag} {{\rm diag}\ }
+\newcommand{\Lwcont}{\mathfrak{L}^{\w}_{\mathrm {cont}}}
+\newcommand{\Lpcont}{\ensuremath{\mathfrak{L}^{2\p}_{\mathrm {cont}}}}
+\newcommand{\Bp}{\B_{\tt adj}}
+\newcommand{\R}{\ensuremath{\mathbb{R}} }
+\newcommand{\Z}{\ensuremath{\mathbb{Z}} }
+\newcommand{\Nat}{\ensuremath{\mathbb{N}} }
+\newcommand{\B}{\ensuremath{\mathfrak{B}}}
+\newcommand{\C}{\ensuremath{\mathbb{C}} }
+\newcommand{\D}{\ensuremath{\mathfrak{D}} }
+\newcommand{\Q}{\ensuremath{\mathcal{M}}}
+\newcommand{\f}{{\tt{f}}}
+\newcommand{\Rr}{\ensuremath{\mathfrak{R}}}
+\newcommand{\I}{\ensuremath{\mathbb{I}}}
+\newcommand{\BH}{\B_\text{\rm Ham}}
+\newcommand{\Cinf}{\ensuremath{\mathfrak{C}^{\infty}}}
+\newcommand{\Cimp}{\ensuremath{\mathfrak{C}_{\tt imp}}}
+\newcommand{\Cont}{{\mathcal{C}}}
+\newcommand{\Cs}{\mathcal{C}_K}
+\newcommand{\Lw}{{\mathfrak{L}^{\tt w}}}
+\newcommand{\bullettop}[1]{\overset{\bullet}{#1}}
+\newcommand{\cir}{{\rm circ}}
+\newcommand{\col}{{\rm col}}
+\renewcommand{\a}{\mathfrak{a}}
+\newcommand{\A}{\mathbb{A}}
+\newcommand{\w}{\tt{w}}
+\newcommand{\n}{{\tt{n}}}
+\newcommand{\s}{{\tt{s}}}
+\newcommand{\ts}{{\tt{t}}}
+\newcommand{\N}{\tt{N}}
+\newcommand{\tM}{\tt{M}}
+\newcommand{\M}[1]{\ensuremath{\mathcal{M}_{#1}}}
+\newcommand{\m}{\tt{m}}
+\newcommand{\nf}{{\tt{n_f}}}
+\newcommand{\ns}{{\tt{n_s}}}
+\newcommand{\p}{\tt{p}}
+\newcommand{\q}{\tt{q}}
+\renewcommand{\r}{\tt{r}}
+\newcommand{\z}{\zeta}
+\newcommand{\e}{\tt{e}}
+\newcommand{\ct}{\tt{c}}
+\newcommand{\kt}{\tt{k}}
+\newcommand{\at}{\tt{a}}
+\newcommand{\bz}{{\bf 0}}
+\newcommand{\Rn}{\R^{\n}}
+\newcommand{\Rw}{\R^{\w}}
+\newcommand{\Rx}{\R[\xi]}
+\newcommand{\Rp}{\R^{\p}}
+\newcommand{\Rm}{\R^{\m}}
+\newcommand{\RN}{\R^{\N}}
+\newcommand{\RM}{\R^{\M}}
+\newcommand{\Cn}{\C^{\n}}
+\newcommand{\Rnn}{\R^{\n\times \n}}
+\newcommand{\Rpp}{\R^{\p\times \p}}
+\newcommand{\Rrr}{\R^{\r\times \r}}
+\newcommand{\Rpn}{\R^{\p\times \n}}
+\newcommand{\Cnn}{\C^{\n \times \n}}
+\newcommand{\Rnp}{\R^{\n \times \p}}
+\newcommand{\Rmn}{\R^{\m \times \n}}
+\newcommand{\Rmm}{\R^{\m \times \m}}
+\newcommand{\Rnm}{\R^{\n \times \m}}
+\newcommand{\RNN}{\R^{\N \times \N}}
+\newcommand{\vectX}{\mathbf{X}}
+\newcommand{\vectY}{\mathbf{Y}}
+\newcommand{\zb}{\ensuremath{z_b}}
+\newcommand{\Zb}{\ensuremath{Z_b}}
+\newcommand{\tPhi}{\tilde{\Phi}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\zr}{{\bf 0}_r}
+\newcommand{\zc}{{\bf 0}_c}
+\newcommand{\zer}{{\bf 0}}
+\newcommand{\one}{{\bf 1}}
+\newcommand{\bX}{\mathcal{J}}
+\newcommand{\bY}{{\bf Y}}
+\newcommand{\bZ}{{\bf Z}}
+\newcommand{\phmin}{\hphantom{-}}
+\newcommand{\bigo}{\mathcal{O}}
+\newcommand{\pr}{\mathfrak{p}}
+\newcommand{\ed}{{\pmb{./}}}
+\newcommand{\multidegree}{\mbox{d}}
+\newcommand{\tL}{\L_M}
+%\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\baselinestretch}{1}
+\newcommand{\V}{\mathbb{V}}
+\renewcommand{\t}{\rm r}
+\newcommand{\Rea}{\mathcal{R}_s}
+\newcommand{\Obs}{\mathcal{O}_w}
+\newcommand{\Obsg}{\mathcal{O}_{wg}}
+\newcommand{\vg}{V_{1\tt{g}}}
+\newcommand{\veg}{V_{\tt{eg}}}
+\newcommand{\nge}{\n_{\tt{eg}}}
+\newcommand{\Ve}{V_{\Lambda}}
+\newcommand{\gV}{V_{\g}}
+\renewcommand{\o}{\omega}
+\newcommand{\Lloc}{{\mathfrak{L}}^{\mathrm{\rm loc}}_{1}}
+\newcommand{\Ltloc}{{\mathfrak{L}}^{\mathrm{\rm loc}}_{2}}
+\newcommand{\tA}{\overline{A}}
+\newcommand{\tB}{\overline{B}}
+\newcommand{\tC}{\overline{C}}
+\newcommand{\tD}{\overline{D}}
+\newcommand{\oA}{\widehat{A}}
+\newcommand{\oB}{\widehat{B}}
+\newcommand{\oC}{\widehat{C}}
+\newcommand{\oD}{\widehat{D}}
+\newcommand{\wA}{A_{r}}
+\newcommand{\wQ}{Q_{r}}
+\newcommand{\wC}{C_{r}}
+\newcommand{\wB}{B_{r}}
+\renewcommand{\l}{\lambda}
+\newcommand{\multiset}{multiset}
+\newcommand{\bx}{\bar{x}}
+\newcommand{\bu}{\bar{u}}
+\newcommand{\Km}{K_{\tt min}}
+\newcommand{\Kp}{K_{\tt max}}
+\newcommand{\Fm}{F_-}
+\newcommand{\Fp}{F_+}
+\newcommand{\dnum}{{\tt degnum}}
+\newcommand{\rnum}{{\tt rootnum}}
+\newcommand{\ddet}{{\tt degdet}}
+\newcommand{\wH}{H_{r}}
+\newcommand{\wE}{{E_{r}}}
+\newcommand{\wR}{\widehat{R}}
+\newcommand{\tAr}{\widetilde{A}}
+\newcommand{\tBr}{\widetilde{B}}
+\newcommand{\tCr}{\widetilde{C}}
+\newcommand{\tE}{\widehat{E}}
+\newcommand{\tH}{\widehat{H}}
+\newcommand{\Ts}{\Theta^*_{\tt n,m}}
+\newcommand{\T}{\Theta_{\tt n,m}}
+\renewcommand{\Z}{\mathcal{Z}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\Dg}{{\mathcal{D}}_{\mathcal{G}}}
+\newcommand{\W}{\mathcal{W}}
+\newcommand{\g}{\tt{g}}
+\newcommand{\wg}{\widehat{\gamma}}
+\renewcommand{\z}{\zeta}
+\newcommand{\wz}{\widehat{\zeta}}
+\renewcommand{\z}{{z}}
+\newcommand{\zs}{{\z}^*}
+\newcommand{\qTs}{\Theta^*_{\tt n,m, r}}
+\newcommand{\qT}{\Theta_{\tt n,m, r}}
+\newcommand{\wM}{\widetilde{L}}
+\newcommand{\qE}{E_{\q}}
+\newcommand{\qH}{H_{\q}}
+\newcommand{\Pset}{\mathscr{P}_{{\n},{\m}}}
+\newcommand{\Nset}{\mathscr{N}}
+\newcommand{\Next}{\Nset_{\tt ext}}
+\newcommand{\RK}{\mathcal{R}(K)}
+\newcommand{\RKs}{\mathcal{R}(K_o)}
+\newcommand{\LK}{\mathcal{L}(K)}
+\newcommand{\LKs}{\mathcal{L}(K_{\tt max})}
+\newcommand{\LKo}{\mathcal{L}(K_o)}
+\newcommand{\FK}{\mathcal{F}(K)}
+\newcommand{\FKs}{\mathcal{F}(K_o)}
+\newcommand{\LKreg}{\mathcal{L}_{\tt t}(K)}
+\newcommand{\LKregs}{\mathcal{L}_{\tt t}(K_{\tt max})}
+\newcommand{\nrnk}{{\tt nrank}}
+\newcommand{\Uimp}{\ensuremath{\mathcal{U}_{\tt imp}}}
+\newcommand{\bA}{A}
+\newcommand{\bB}{B}
+\newcommand{\bC}{C}
+\newcommand{\bD}{D}
+\newcommand{\del}[1]{\ensuremath{\delta^{(#1)}}}
+\newcommand{\dd}{\tt{d}}
+\newcommand{\hN}{\ensuremath{\widehat{N}}}
+\newcommand{\Ns}{\ensuremath{{\tt N}_{\tt s}}}
+\newcommand{\SH}{\Sigma_\text{\rm Ham}}
+\newcommand{\Vf}{{V_{1\Lambda}}}
+\newcommand{\Vs}{{V_{2\Lambda}}}
+\newcommand{\Vt}{{V_{3\Lambda}}}
+\newcommand{\Vft}{V^T_{1\Lambda}}
+\newcommand{\Vst}{V^T_{2\Lambda}}
+\newcommand{\Vtt}{V^T_{3\Lambda}}
+\renewcommand{\S}{\mathcal{S}}
+\newcommand{\Xf}{X}
+\newcommand{\Xs}{Y}
+\newcommand{\Xft}{X^T}
+\newcommand{\Xst}{Y^T}
+\newcommand{\Xfi}{X^{-1}}
+\newcommand{\Ret}{\widetilde{\mathcal{R}}_s}
+\newcommand{\hU}{\widehat{U}}
+\newcommand{\ttw}{\texttt{w}}
+\newcommand{\ttwe}{\emph{\texttt{w}}}
+\newcommand{\BP}{\noindent{\it Proof:}~}
+\newcommand{\BPref}[1]{\noindent{\it Proof of #1:}~}
+\newcommand{\EP}{\hspace*{\fill} {\boldmath $\square$ } \bigskip }
+\newcommand{\mb}[1]{\mathbb{#1}}
+\newcommand{\mf}[1]{\mathfrak{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\ov}[1]{\overline{#1}}
+\renewcommand{\ker}{\mathrm {ker~}}
+\renewcommand{\Im}{\mathrm {im~}}
+\renewcommand{\H}{\mathrm {Hom}}
+\newcommand{\annm}{\mathrm {ann~}\mc{M}} 
+\newcommand{\ann}{\mathrm {ann~}} 
+\newcommand{\gbar}[1]{\overline{#1}^{\mc{G}}}
+\newcommand{\Laq}{\mf{L}^q_{\mathrm{aut}}}
+\newcommand{\vdotdel}{\langle v,\partial\rangle} 
+\newcommand{\udotdel}{\langle u,\partial\rangle}
+
+\newcommand{\Vcal}{\mathcal{V}}
+\newcommand{\Vg}{{\mathcal{V}}_{\mathcal{G}}}
+\newcommand{\Lg}{{\mathcal{L}}_{\mathcal{G}}}
+\newcommand{\Eg}{{\mathcal{E}}_{\mathcal{G}}}
+\newcommand{\Wg}{{\mathcal{W}}_{\mathcal{G}}}
+\newcommand{\Ad}{{\mathcal{A}}_{\mathcal{G}}}
+\renewcommand{\H}{\mathcal{H}}
+\renewcommand{\L}{\mathcal{L}}
+\newcommand{\letree}{\mathcal{L}_{e_{\tau}}}
+\newcommand{\letreein}{\mathcal{L}_{e_{\tau_{in}}}}
+\newcommand{\lntree}{\mathcal{L}_{n_{\tau}}}
+\newcommand{\lntreein}{\mathcal{L}_{n_{\tau_{in}}}}
+\newcommand{\etree}{E_{\tau}}
+\newcommand{\etreein}{E_{\tau_{in}}}
+
+\newcommand{\splitalgo} {
+	\algstore{myalg}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}                
+\begin{algorithmic} [1]                   
+	\algrestore{myalg}
+}
+\newcommand{\group}{\begingroup\makeatletter\def\f@size{9}\check@mathfonts}

@@ -1,0 +1,300 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black}
+\setlength{\parskip}{5pt}
+\setlength{\parindent}{0pt}
+\setlist[enumerate]{leftmargin=*,itemsep=7pt}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Ph.D. Thesis Evaluation -- Response to Examiner}
+\rhead{\small Avinash Kumar Dubey}
+\cfoot{\thepage}
+\newcommand{\comment}[1]{\vspace{5pt}\noindent\colorbox{gray!13}{\parbox{\dimexpr\linewidth-2\fboxsep}{\textbf{Examiner's comment:} #1}}}
+\newcommand{\response}{\par\textbf{Response:} }
+\newcommand{\revision}{\par\textbf{Proposed thesis revision:} }
+\newcommand{\caution}[1]{\par\textit{\color{red!65!black}Action before submission: #1}}
+\begin{document}
+
+\begin{center}
+{\Large\bfseries Response to the Evaluation Report}\\[4pt]
+{\large\bfseries Prof. Debasish Ghose}\\
+Department of Aerospace Engineering, IISc Bangalore\\[8pt]
+\textbf{Candidate:} Avinash Kumar Dubey \qquad
+\textbf{Roll No.:} 184076010\\
+\textbf{Thesis:} \emph{Analysis \& Synthesis of Networked Dynamical Systems: Stability, Performance and Applications of Consensus}
+\end{center}
+\vspace{4pt}
+\hrule
+\vspace{8pt}
+\textbf{Dear Professor Ghose,}
+
+I sincerely thank you for your positive evaluation of my thesis and for recognizing its theoretical contributions and relevance to multi-agent applications. I am grateful for the thoughtful questions and suggestions. I respond to each point below and indicate the corresponding clarification or revision proposed for the thesis. Chapter and section references refer to the submitted version; page numbers will be updated after revision.
+
+\section*{Point-by-point responses}
+
+\comment{The effect of a reverse edge in first-order and second-order system networks is well-known. Can it also be explained through the effect of feedback in LTI systems?}
+\response
+Thank you for this insightful observation. Indeed, the effect of introducing a reverse edge in first-order and second-order consensus networks can also be interpreted through the classical feedback framework for linear time-invariant (LTI) systems. This interpretation provides an alternative control-theoretic explanation of the spectral changes induced by reverse edges and establishes a natural connection with the root-locus-based approach developed in Chapter~3.
+
+Consider a directed path graph as the nominal network, with Laplacian matrix $\mathcal{L}_{\tau}$. The reverse edge from node $y$ to node $x$, where $y>x$, introduces a feedback connection based on the relative state between these two nodes. Let
+\[
+b=e_x,\qquad c=e_x-e_y,
+\]
+where $e_i$ denotes the $i$th standard basis vector. The reverse edge measures the relative state $c^T\boldsymbol{x}=x_x-x_y$ and feeds the resulting signal back to node $x$ with weight $w_r>0$. The corresponding feedback input is
+\[
+u_r=-w_r c^T\boldsymbol{x},
+\]
+which is injected through $b$.
+
+\textit{First-order consensus:}
+For the nominal path network, the first-order consensus dynamics are
+\[
+\boldsymbol{\dot{x}}=-\mathcal{L}_{\tau}\boldsymbol{x}.
+\]
+After introducing the reverse edge, the dynamics become
+\begin{equation}
+\boldsymbol{\dot{x}}
+=-\mathcal{L}_{\tau}\boldsymbol{x}-bw_rc^T\boldsymbol{x}
+=-\left(\mathcal{L}_{\tau}+w_rbc^T\right)\boldsymbol{x}.
+\label{eq:reverse_edge_first_order}
+\end{equation}
+Thus, the reverse edge can be interpreted as a constant-gain feedback connection around the nominal path network. The corresponding transfer function from the scalar feedback input to the relative-state output is
+\begin{equation}
+G_{\tau}(s)=c^T(sI+\mathcal{L}_{\tau})^{-1}b.
+\end{equation}
+Using the matrix determinant lemma, the closed-loop characteristic equation associated with the disagreement dynamics takes the classical feedback form
+\begin{equation}
+1+w_rG_{\tau}(s)=0.
+\label{eq:reverse_edge_feedback_first_order}
+\end{equation}
+Since $c^T\mathbf{1}=0$, the feedback does not affect the consensus mode corresponding to the zero Laplacian eigenvalue. Its effect is therefore confined to the disagreement dynamics.
+
+In the first-order network, the nonzero Laplacian eigenvalues determine the decay rates of the disagreement modes. Introducing a reverse edge modifies these eigenvalues and consequently changes the convergence rate. In the chain configurations investigated in the thesis, the dominant disagreement eigenvalue moves closer to the origin, reducing the asymptotic convergence rate while preserving consensus stability under the directed spanning-tree condition.
+
+\textit{Second-order consensus:}
+The same feedback interpretation extends to the double-integrator network. The nominal dynamics are
+\begin{equation}
+\dot{\bf{x}}=\bf{v},\qquad
+\dot{\bf{x}}=-\mathcal{L}_{\tau}\bf{x}-\gamma \mathcal{L}_{\tau}\bf{v},
+\end{equation}
+where $\gamma$ denotes the velocity coupling gain. Under the second-order consensus protocol, the reverse edge introduces the feedback signal
+\[
+u_r=-w_r(c^T\bf{x}+\gamma c^T \bf{v}),
+\]
+which is injected into the acceleration equation through $b$. The resulting closed-loop dynamics are
+\begin{equation}
+\begin{aligned}
+\dot{\bf{x}}&=\bf{v},\\
+\dot{\bf{v}}&=-\mathcal{L}_{\tau}\bf{x}-\gamma \mathcal{L}_{\tau}\bf{v}
+- bw_rc^T(x+\gamma \bf{v}).
+\end{aligned}
+\label{eq:reverse_edge_second_order}
+\end{equation}
+
+The corresponding nominal transfer function from the scalar acceleration input to the relative-state feedback output is
+\begin{equation}
+G_{\tau}(s)
+=(1+\gamma s)c^T
+\left(s^2I+\gamma s\mathcal{L}_{\tau}+\mathcal{L}_{\tau}\right)^{-1}b.
+\label{eq:second_order_feedback_tf}
+\end{equation}
+Consequently, the reverse-edge feedback gives the closed-loop characteristic equation
+\begin{equation}
+1+w_rG_{\tau}(s)=0,
+\label{eq:reverse_edge_feedback_second_order}
+\end{equation}
+when considered on the disagreement dynamics.
+
+The difference between first-order and second-order networks becomes particularly important when examining the closed-loop poles. For a nonzero Laplacian eigenvalue $\lambda$, the corresponding second-order characteristic equation is
+\begin{equation}
+s^2+\gamma\lambda s+\lambda=0.
+\end{equation}
+For a directed network, the Laplacian eigenvalues need not be real. Thus, introducing reverse edges can modify both the real and imaginary parts of the Laplacian spectrum, thereby changing the damping and oscillatory characteristics of the second-order modes. In particular, the complex nature of the affected eigenvalues can reduce the stability margin, and if the velocity coupling gain is insufficient, the corresponding closed-loop poles may enter the right-half plane, resulting in loss of consensus.
+
+Therefore, while the effect of a reverse edge in a first-order network is primarily reflected in a change in the disagreement decay rates, its effect in a second-order network can be more critical because it may also affect closed-loop stability.
+
+\textit{Connection with directed incidence matrices and feedback design:}
+This feedback interpretation can also be expressed through an incidence-matrix factorization of the directed Laplacian. Let $E$ denote the node-edge incidence matrix, whose column for a directed edge $j\rightarrow i$ is $e_i-e_j$. Let $E_{\mathrm{in}}$ denote the corresponding receiving-node incidence matrix, whose column for the same edge is $e_i$, and let $W$ be the diagonal matrix of edge weights. With this convention, the directed Laplacian admits the asymmetric factorization
+\begin{equation}
+\mathcal{L}=E_{\mathrm{in}}WE^T.
+\label{eq:directed_laplacian_factorization}
+\end{equation}
+This factorization separates the relative-state measurement across an edge from the node at which the corresponding feedback signal is injected. In this sense, each directed edge represents a localized feedback connection within the overall network.
+
+Finally, this viewpoint provides a natural control-theoretic interpretation of the root-locus-based method developed
+
+\comment{In Chapter 2, can Cases 5 and 6 be considered special cases of Case 4? Or do they have to be treated separately?}
+\textbf{Response:}
+\textcolor{red}{May be worthwhile adding the corresponding figures here once more. That way you can point to them and bring out the differences more clearly.}
+Thank you for this insightful observation. The relationship between Cases 4, 5, and 6 can be clarified by examining their characteristic equations and the corresponding changes in the in-degree structure of the network.
+
+\medskip
+\noindent
+\textbf{Case 5: Fully nested cycles sharing a common tail}
+
+In Case 5, the two reverse edges share a common tail node, i.e.,
+\begin{equation}
+    x_1 < x_2 < y_1 = y_2,
+    \qquad \ell_1 > \ell_2.
+\end{equation}
+
+Although the two reverse edges originate from the same node, they terminate at two distinct head nodes, $x_1$ and $x_2$. Consequently, the additional incoming-edge contributions are distributed across two different rows of the in-degree Laplacian. In particular, both head nodes receive one additional incoming edge, while the common tail node does not receive any additional incoming edge from these reverse edges.
+
+The characteristic equation obtained for Case 5 in (2.60) is
+\begin{equation}
+    (s+1)^2s^{\ell_1-1}
+    -(s+1)s^{\ell_1-\ell_2-1}-1=0.
+    \tag{2.60}
+\end{equation}
+
+Expanding the above expression gives
+\begin{equation}
+\begin{aligned}
+    s^{\ell_1+1}
+    +2s^{\ell_1}
+    +s^{\ell_1-1}
+    -s^{\ell_1-\ell_2}
+    -s^{\ell_1-\ell_2-1}
+    =1.
+\end{aligned}
+\tag{2.60a}
+\end{equation}
+
+This is exactly the characteristic equation obtained for Case 4 in (2.57):
+\begin{equation}
+\begin{aligned}
+    s^{\ell_1+1}
+    +2s^{\ell_1}
+    +s^{\ell_1-1}
+    -s^{\ell_1-\ell_2}
+    -s^{\ell_1-\ell_2-1}
+    =1.
+\end{aligned}
+\tag{2.57}
+\end{equation}
+
+Therefore, \textbf{Case 5 can be considered a special case of Case 4 from the perspective of the characteristic equation and the resulting spectral stability boundary}. A separate spectral derivation is not necessary for the in-degree Laplacian formulation considered in this thesis.
+
+\medskip
+\noindent
+\textbf{Case 6: Fully nested cycles sharing a common head}
+
+In Case 6, the two reverse edges share a common head node, i.e.,
+\begin{equation}
+    x_1 = x_2 < y_2 < y_1,
+    \qquad \ell_1 > \ell_2.
+\end{equation}
+
+Unlike Case 5, both reverse edges terminate at the same node. Thus, the common head node receives two additional incoming edges. Since it also receives the original incoming edge from its predecessor along the directed chain, its in-degree becomes three:
+\begin{equation}
+    d_{\mathrm{in},x_1}=3.
+\end{equation}
+
+This changes the corresponding diagonal entry of the in-degree Laplacian and, consequently, the characteristic equation. The determinant obtained for Case 6 in (2.62) is
+\begin{equation}
+\begin{aligned}
+    |\lambda I-L|
+    ={}&\lambda(\lambda-1)^{N-\ell_1-1}\\
+    &\times\left[
+    (\lambda-1)^{\ell_1}(\lambda-2)
+    +(\lambda-1)^{\ell_1-\ell_2}-1
+    \right]=0.
+\end{aligned}
+\tag{2.62}
+\end{equation}
+
+Using the substitution $s=1-\lambda$, the corresponding characteristic equation becomes
+\begin{equation}
+    s^{\ell_1}(s+2)-s^{\ell_1-\ell_2}=1.
+    \tag{2.61}
+\end{equation}
+
+This is different from the characteristic equation obtained for Case 4. Hence, \textbf{Case 6 cannot be treated as a special case of Case 4 under the in-degree Laplacian formulation considered in this thesis and requires a separate spectral analysis.}
+
+\medskip
+\noindent
+\textbf{Additional clarification on the incidence representation}
+
+The distinction also highlights the role of the chosen Laplacian formulation. The present thesis employs the in-degree Laplacian,
+\begin{equation}
+    L=D_{\mathrm{in}}-W_g,
+\end{equation}
+for which the receiving (head) nodes determine the rows in which the additional reverse-edge contributions appear. Under an out-degree Laplacian formulation, the corresponding structural effect would instead be associated with the sending (tail) nodes. For example, two reverse edges sharing a common tail would contribute to the out-degree of the same node. Thus, the spectral equivalence observed between Cases 4 and 5 is specific to the in-degree Laplacian formulation adopted here and should not be interpreted as a topology-independent equivalence.
+
+\medskip
+\noindent
+\textbf{In summary}, Cases 4, 5, and 6 represent three distinct topological configurations. However, for the in-degree Laplacian studied in this thesis, Case 5 yields the same characteristic equation as Case 4, whereas Case 6 produces a distinct characteristic equation due to the accumulation of incoming edges at the common head node. Accordingly, Case 5 is spectrally reducible to Case 4, while Case 6 requires separate treatment.
+
+\comment{I am a little confused about Fig. 3.5. The disc around $p_{\ell+1}$ should have a radius $p_1$. I am not sure if this is the case in the figure. Maybe it is an issue of scale?}
+\response
+Thank you for pointing this out. The original Figure 3.5 was not drawn to the correct scale, which made the radius of the disc corresponding to $p_{\ell+1}$ appear inconsistent. As correctly noted, this disc should have a radius of $p_1$. 
+
+In the column Gershgorin construction associated with $\widetilde P$, the last column disc is centered at $p_{\ell+1}$ and has radius $p_1$, as stated immediately before (3.18). Its leftmost real-axis point is therefore $p_{\ell+1}-p_1$. For the numerical illustration in Figure 3.5, $p_1=12$, $\ell=5$, and the arithmetic-progression spacing is $d=2$. The last disc is consequently centered at $p_{\ell+1}=2p_1-\ell d=14$ and has radius $12$, so its left boundary is at $14-12=2=d$. The geometry is consistent with the analytical construction; the figure's scale/labels may not make the radius sufficiently apparent. I have altered Figure 3.5 to accurately reflect the prescribed disc radii and their geometric relationships.
+
+\comment{Given the constraints set out in Problem 5.3, I would expect feasibility, or existence of solution, based on initial conditions, to be an issue. I wonder if these were explicitly established based on the constraints, taken together or individually.}
+\response{ \textcolor{red}{Again, repeating the relevant figures from your thesis here, so that the reader does not have to flip through pages of your thesis again, is a good idea. Do remember to refer to the added figures at relevant parts of the response.}
+Thank you for raising this important point. We agree that the feasibility of Problem 5.3 should be understood in terms of the simultaneous satisfaction of all four requirements: target interception, terminal impact-angle satisfaction, prescribed impact time, and actuator feasibility. These requirements are not independently feasible for arbitrary initial conditions and arbitrary prescribed impact times. The existence of a solution is established through the geometric trajectory constructions developed in Sections 5.3.3--5.3.6.
+
+For a given initial configuration and desired terminal impact angle, the classical Dubins path provides the minimum feasible path length $P_{\min}$ and, consequently, the minimum achievable impact time:
+\[
+t_{\mathrm{imp}}^{\min}=\frac{P_{\min}}{V_M}.
+\]
+Therefore, a necessary condition for feasibility is
+\[
+t^\star_{\mathrm{imp}}\geq t_{\mathrm{imp}}^{\min}.
+\]
+
+The actuator constraint determines the minimum permissible turning radius:
+\[
+r_m=\frac{V_M^2}{a_{\max}}.
+\]
+The proposed Dubins-like construction uses this radius for the primary circular arc, a straight-line tangent segment, and a secondary circular arc with a design radius $r_d\geq r_m$. Thus, the lateral acceleration on the secondary arc satisfies
+\[
+|a_M|=\frac{V_M^2}{r_d}
+\leq \frac{V_M^2}{r_m}=a_{\max},
+\]
+while the straight segment requires zero lateral acceleration. Hence, the actuator constraint is respected by construction.
+
+Regarding geometric feasibility, Section 5.3.3 derives the standard Transverse Common Tangent (TCT) construction and its corresponding geometric conditions. In particular, the circles must admit a valid common tangent, requiring
+\[
+d(r_d)\geq r_m+r_d.
+\]
+For the same-sign angle configuration considered in this section, this condition imposes the design interval
+\[
+r_d\in[r_m,r_{\mathrm{crit}}^{\mathrm{TCT}}).
+\]
+The resulting path length $P(r_d)$, and hence the impact time $t_{\mathrm{imp}}(r_d)=P(r_d)/V_M$, can be continuously tuned over the attainable interval. Section 5.3.6 further establishes the path-length monotonicity underlying this time-tuning mechanism. Consequently, a prescribed impact time within this interval can be achieved by selecting a suitable secondary radius.
+
+The standard TCT construction, however, imposes an upper bound on the achievable arrival time. To overcome this limitation, Section 5.3.4 introduces the mirrored TCT geometry. In this configuration, the center-to-center distance increases monotonically with the mirrored secondary radius, and the resulting path length is unbounded above. The analysis therefore establishes that any physically feasible prescribed impact time satisfying
+\[
+t^\star_{\mathrm{imp}}\geq t_{\mathrm{imp}}^{\min}
+\]
+can be matched by selecting a suitable mirrored-circle radius $r'_d$. The additional DCT and outer-circle configurations are also discussed in Section 5.3.5 for the corresponding geometric cases.
+
+Thus, the existence of a solution is conditional on the joint geometric and actuator feasibility conditions of the selected path construction. The minimum Dubins path establishes the lower bound on achievable impact time, while the variable-radius and mirrored geometries provide the required flexibility to achieve the prescribed arrival time without violating the acceleration constraint. The thesis therefore does not claim feasibility for arbitrary combinations of initial conditions, terminal impact angles, and arrival times.
+
+We acknowledge that these feasibility conditions can be stated more explicitly in the formal problem formulation. Accordingly, we will strengthen the discussion immediately following Problem 5.3 to clarify that feasibility is conditional on (i) the existence of a geometrically valid path for the selected TCT/DCT configuration, (ii) satisfaction of the minimum-turn-radius constraint, and (iii) the prescribed impact time lying within the attainable time interval of the selected geometric branch.
+}
+
+\vspace{10pt}
+\hrule
+\vspace{8pt}
+I again thank you for your encouraging assessment and for these valuable suggestions. The clarifications will improve the clarity of the thesis, particularly the interpretation of feedback-induced spectral changes, the distinction between nested-cycle cases, the presentation of the Gershgorin geometry, and the joint feasibility conditions for constrained guidance.
+
+\vspace{14pt}
+Sincerely,\\[18pt]
+\textbf{Avinash Kumar Dubey}\\
+Roll No. 184076010\\
+Department of Electrical Engineering\\
+Indian Institute of Technology Bombay
+
+\end{document}
