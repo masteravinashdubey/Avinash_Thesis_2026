@@ -66,7 +66,7 @@ The graph Laplacian $\mathcal{L}$ exhibits the following fundamental spectral pr
     \end{equation}
     This establishes that $\mathcal{L} \mathbf{1}_N = 0_{N \times 1}$, where $\mathbf{1}_N = [1, 1, \dots, 1]^T \in \R^N$ is the vector of all ones. Thus, $\lambda_1 = 0$ is always an eigenvalue of $\mathcal{L}$ with a corresponding right eigenvector $\mathbf{1}_N$.
     
-    \item \textbf{Positive Real Spectrum Location:} By Gershgorin's Disc Theorem, all eigenvalues $\lambda \in \sigma(\mathcal{L})$ lie within the union of closed discs centered at $l_{ii} = d_{\text{in},i}$ with radii $R_i = \sum_{j \neq i} |l_{ij}| = d_{\text{in},i}$. Consequently, every eigenvalue satisfies:
+    \item \textbf{Positive Real Spectrum Location:} By Gershgorin's Disc Theorem \cite{horn2012matrix}, all eigenvalues $\lambda \in \sigma(\mathcal{L})$ lie within the union of closed discs centered at $l_{ii} = d_{\text{in},i}$ with radii $R_i = \sum_{j \neq i} |l_{ij}| = d_{\text{in},i}$. Consequently, every eigenvalue satisfies:
     \begin{equation}
         \mathfrak{Re}(\lambda_i) \ge 0, \quad \forall i \in \{1, 2, \dots, N\}
     \end{equation}

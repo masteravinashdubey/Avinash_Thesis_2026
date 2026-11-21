@@ -1,3 +1,27 @@
+%\documentclass[11pt,a4paper]{article}
+%\usepackage[margin=1in]{geometry}
+%\usepackage[T1]{fontenc}
+%\usepackage{lmodern}
+%\usepackage{microtype}
+%\usepackage{amsmath,amssymb,mathtools}
+%\usepackage{enumitem}
+%\usepackage{xcolor}
+%\usepackage{hyperref}
+%\usepackage{fancyhdr}
+%\usepackage{titlesec}
+%\hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black}
+%\setlength{\parskip}{5pt}
+%\setlength{\parindent}{0pt}
+%\setlist[enumerate]{leftmargin=*,itemsep=7pt}
+%\pagestyle{fancy}
+%\fancyhf{}
+%\lhead{\small Ph.D. Thesis Evaluation -- Response to Examiner}
+%\rhead{\small Avinash Kumar Dubey}
+%\cfoot{\thepage}
+%\newcommand{\comment}[1]{\vspace{5pt}\noindent\colorbox{gray!13}{\parbox{\dimexpr\linewidth-2\fboxsep}{\textbf{Examiner's comment:} #1}}}
+%\newcommand{\response}{\par\textbf{Response:} }
+%\newcommand{\revision}{\par\textbf{Proposed thesis revision:} }
+%\newcommand{\caution}[1]{\par\textit{\color{red!65!black}Action before submission: #1}}
 \documentclass[11pt,a4paper]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage[T1]{fontenc}
@@ -6,9 +30,24 @@
 \usepackage{amsmath,amssymb,mathtools}
 \usepackage{enumitem}
 \usepackage{xcolor}
+\usepackage{amsthm}
 \usepackage{hyperref}
+\usepackage{float}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
+\usepackage{tikz-cd}
+\usepackage{tikz}
+\usetikzlibrary{arrows, matrix}
+\usetikzlibrary{arrows.meta, angles, quotes, calc}
+\usetikzlibrary{shapes, arrows, calc, arrows.meta, fit, positioning}%graphs,graphdrawing} %\usegdlibrary{layered}
+\tikzset{
+-Latex,auto,node distance =2 cm and 1.3 cm, thick,% node distance is the distance between one node to other, where 1.5cm is the length of the edge between the nodes  
+state/.style ={circle, draw, minimum width = 0.9 cm}, % the minimum width is the width of the ellipse, which is the size of the shape of vertex in the node graph  
+point/.style = {circle, draw, inner sep=0.18cm, fill, node contents={}},  
+dotteddirected/.style={-Latex,loosely dash dot}, % it is the edge having two directions  
+reverseedge/.style={-Latex,dotted}, % it is the dashed directed edge
+el/.style = {inner sep=2.5pt, align=right, sloped}  
+}
 \hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black}
 \setlength{\parskip}{5pt}
 \setlength{\parindent}{0pt}
@@ -18,10 +57,50 @@
 \lhead{\small Ph.D. Thesis Evaluation -- Response to Examiner}
 \rhead{\small Avinash Kumar Dubey}
 \cfoot{\thepage}
-\newcommand{\comment}[1]{\vspace{5pt}\noindent\colorbox{gray!13}{\parbox{\dimexpr\linewidth-2\fboxsep}{\textbf{Examiner's comment:} #1}}}
+
+\usepackage{amsthm}
+\usepackage{xparse}
+
+% Automatic numbering of examiner comments
+\newcounter{examcomment}
+
+\renewcommand{\theexamcomment}{\arabic{examcomment}}
+\newcommand{\comment}[1]{%
+\refstepcounter{examcomment}%
+\par\vspace{5pt}\noindent
+\colorbox{gray!13}{%
+	\parbox{\dimexpr\linewidth-2\fboxsep}{%
+		\textbf{Examiner's Comment \theexamcomment:} #1%
+	}%
+}%
+\par
+}
+
+% Problem counter
+\newcounter{problem}
+\renewcommand{\theproblem}{\arabic{problem}}
+
+% Problem environment: automatic or manually specified numbering
+\NewDocumentEnvironment{problem}{o}
+{%
+\par\vspace{5pt}\noindent
+\IfValueTF{#1}
+{\textbf{Problem #1.}}
+{%
+	\refstepcounter{problem}%
+	\textbf{Problem \theproblem.}%
+}%
+\quad\ignorespaces
+}
+{%
+\par\vspace{5pt}
+}
+%\newcommand{\comment}[1]{\vspace{5pt}\noindent\colorbox{gray!13}{\parbox{\dimexpr\linewidth-2\fboxsep}{\textbf{Examiner's comment:} #1}}}
 \newcommand{\response}{\par\textbf{Response:} }
 \newcommand{\revision}{\par\textbf{Proposed thesis revision:} }
 \newcommand{\caution}[1]{\par\textit{\color{red!65!black}Action before submission: #1}}
+
+
 \begin{document}
 \begin{center}
     {\Large\bfseries Response to the Evaluation Report}\\[4pt]
@@ -386,4 +465,17 @@ Sincerely,\\[18pt]
 Roll No. 184076010\\
 Department of Electrical Engineering\\
 Indian Institute of Technology Bombay
+
+\clearpage
+\begin{thebibliography}{99}
+	\bibitem{horn2012matrix}
+	R. A. Horn and C. R. Johnson,
+	\textit{Matrix Analysis},
+	2nd ed., Cambridge University Press, Cambridge, 2012.
+	\bibitem{harville1997}
+	D. A. Harville,
+	\textit{Matrix Algebra From a Statistician's Perspective},
+	Springer-Verlag, New York, 1997.
+\end{thebibliography}
+
 \end{document}

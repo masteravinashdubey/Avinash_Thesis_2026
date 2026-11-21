@@ -6,10 +6,25 @@
 \usepackage{amsmath,amssymb,mathtools}
 \usepackage{enumitem}
 \usepackage{xcolor}
+\usepackage{amsthm}
 \usepackage{hyperref}
+\usepackage{float}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black}
+\usepackage{tikz-cd}
+\usepackage{tikz}
+\usetikzlibrary{arrows, matrix}
+\usetikzlibrary{arrows.meta, angles, quotes, calc}
+\usetikzlibrary{shapes, arrows, calc, arrows.meta, fit, positioning}%graphs,graphdrawing} %\usegdlibrary{layered}
+\tikzset{
+-Latex,auto,node distance =2 cm and 1.3 cm, thick,% node distance is the distance between one node to other, where 1.5cm is the length of the edge between the nodes  
+state/.style ={circle, draw, minimum width = 0.9 cm}, % the minimum width is the width of the ellipse, which is the size of the shape of vertex in the node graph  
+point/.style = {circle, draw, inner sep=0.18cm, fill, node contents={}},  
+dotteddirected/.style={-Latex,loosely dash dot}, % it is the edge having two directions  
+reverseedge/.style={-Latex,dotted}, % it is the dashed directed edge
+el/.style = {inner sep=2.5pt, align=right, sloped}  
+}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,urlcolor=blue!55!black}
 \setlength{\parskip}{5pt}
 \setlength{\parindent}{0pt}
 \setlist[enumerate]{leftmargin=*,itemsep=7pt}
@@ -18,10 +33,50 @@
 \lhead{\small Ph.D. Thesis Evaluation -- Response to Examiner}
 \rhead{\small Avinash Kumar Dubey}
 \cfoot{\thepage}
-\newcommand{\comment}[1]{\vspace{5pt}\noindent\colorbox{gray!13}{\parbox{\dimexpr\linewidth-2\fboxsep}{\textbf{Examiner's comment:} #1}}}
+
+\usepackage{amsthm}
+\usepackage{xparse}
+
+% Automatic numbering of examiner comments
+\newcounter{examcomment}
+
+\renewcommand{\theexamcomment}{\arabic{examcomment}}
+\newcommand{\comment}[1]{%
+	\refstepcounter{examcomment}%
+	\par\vspace{5pt}\noindent
+	\colorbox{gray!13}{%
+		\parbox{\dimexpr\linewidth-2\fboxsep}{%
+			\textbf{Examiner's Comment \theexamcomment:} #1%
+		}%
+	}%
+	\par
+}
+
+% Problem counter
+\newcounter{problem}
+\renewcommand{\theproblem}{\arabic{problem}}
+
+% Problem environment: automatic or manually specified numbering
+\NewDocumentEnvironment{problem}{o}
+{%
+	\par\vspace{5pt}\noindent
+	\IfValueTF{#1}
+	{\textbf{Problem #1.}}
+	{%
+		\refstepcounter{problem}%
+		\textbf{Problem \theproblem.}%
+	}%
+	\quad\ignorespaces
+}
+{%
+	\par\vspace{5pt}
+}
+%\newcommand{\comment}[1]{\vspace{5pt}\noindent\colorbox{gray!13}{\parbox{\dimexpr\linewidth-2\fboxsep}{\textbf{Examiner's comment:} #1}}}
 \newcommand{\response}{\par\textbf{Response:} }
 \newcommand{\revision}{\par\textbf{Proposed thesis revision:} }
 \newcommand{\caution}[1]{\par\textit{\color{red!65!black}Action before submission: #1}}
+
+
 \begin{document}
 
 \begin{center}
@@ -45,7 +100,60 @@ I sincerely thank you for your positive evaluation of my thesis and for recogniz
 \response
 Thank you for this insightful observation. Indeed, the effect of introducing a reverse edge in first-order and second-order consensus networks can also be interpreted through the classical feedback framework for linear time-invariant (LTI) systems. This interpretation provides an alternative control-theoretic explanation of the spectral changes induced by reverse edges and establishes a natural connection with the root-locus-based approach developed in Chapter~3.
 
-Consider a directed path graph as the nominal network, with Laplacian matrix $\mathcal{L}_{\tau}$. The reverse edge from node $y$ to node $x$, where $y>x$, introduces a feedback connection based on the relative state between these two nodes. Let
+Consider a directed path graph as the nominal network, with Laplacian matrix $\mathcal{L}_{\tau}$. The reverse edge from node $y$ to node $x$, where $y>x$, introduces a feedback connection based on the relative state between these two nodes (Refer Fig. \ref{fig:directed_path_reverse_edge}, $y=7$ and $x=3$ for the illustration). 
+
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		node distance=1.35cm,
+		agent/.style={
+			circle,
+			draw,
+			thick,
+			minimum size=8mm,
+			inner sep=0pt
+		},
+		nominal/.style={
+			-{Stealth[length=2.5mm]},
+			thick,
+			blue
+		},
+		feedback/.style={
+			-{Stealth[length=2.8mm]},
+			very thick,
+			red
+		}
+		]
+		
+		% Nodes
+		\foreach \i in {1,...,8}
+		\node[agent] (v\i) at (1.3*\i,0) {$\i$};
+		
+		% Nominal directed path
+		\foreach \i [evaluate=\i as \j using int(\i+1)] in {1,...,7}
+		\draw[nominal] (v\i) -- (v\j);
+		
+		% Reverse edge from y to x
+		\draw[feedback]
+		(v7.north) to[out=90,in=100,looseness=0.8]
+		node[midway,above=0.8mm,red] {$w_{xy}$}
+		(v3.north);
+		
+		% Labels
+		\node[blue] at (5.2,-0.65)
+		{Nominal directed path};
+		
+		\node[red] at (6.5,0.85)
+		{Reverse feedback edge};
+		
+	\end{tikzpicture}
+	\caption{Directed path graph with a reverse edge from node $y$ to node $x$, where $y>x$.}
+	\label{fig:directed_path_reverse_edge}
+\end{figure}
+
+
+Let
 \[
 b=e_x,\qquad c=e_x-e_y,
 \]
@@ -71,7 +179,7 @@ Thus, the reverse edge can be interpreted as a constant-gain feedback connection
 \begin{equation}
 G_{\tau}(s)=c^T(sI+\mathcal{L}_{\tau})^{-1}b.
 \end{equation}
-Using the matrix determinant lemma, the closed-loop characteristic equation associated with the disagreement dynamics takes the classical feedback form
+Using the matrix determinant lemma \cite{harville1997}, the closed-loop characteristic equation associated with the disagreement dynamics takes the classical feedback form
 \begin{equation}
 1+w_rG_{\tau}(s)=0.
 \label{eq:reverse_edge_feedback_first_order}
@@ -133,13 +241,69 @@ This factorization separates the relative-state measurement across an edge from 
 Finally, this viewpoint provides a natural control-theoretic interpretation of the root-locus-based method developed
 
 \comment{In Chapter 2, can Cases 5 and 6 be considered special cases of Case 4? Or do they have to be treated separately?}
-\textbf{Response:}
-\textcolor{red}{May be worthwhile adding the corresponding figures here once more. That way you can point to them and bring out the differences more clearly.}
-Thank you for this insightful observation. The relationship between Cases 4, 5, and 6 can be clarified by examining their characteristic equations and the corresponding changes in the in-degree structure of the network.
+\response
+The relationship between Cases 4, 5, and 6 can be clarified by examining their characteristic equations and the corresponding changes in the in-degree structure of the network.
 
+\textbf{Case 4 Fully Nested Cycles with Disjoint Reverse Edges}
+
+The case 4 is shown in Figure \ref{Case4}.
+
+
+ \begin{figure}[H]
+		\centering
+		\scalebox{0.7}{\begin{tikzpicture}
+				\node[state] (root) {\Huge{$1$}};
+				\node[state] (x1) [right of=root] {\huge{$x_1$}};
+				\node[state] (x2) [right of=x1] {\huge{$x_2$}};
+				\node[state] (y2) [right of=x2] {\huge{$y_2$}};
+				\node[state] (y1) [right of=y2] {\huge{$y_1$}};
+				\node[state] (N) [right of=y1] {\huge{N}};
+				\path [dotteddirected] (root) edge (x1);
+				\path [dotteddirected] (x1) edge (x2);
+				\path [dotteddirected] (x2) edge (y2);
+				\path [dotteddirected] (y2) edge (y1);
+				\path [dotteddirected] (y1) edge (N);
+				\path[reverseedge] (y1) edge[bend right=90] (x1);
+				\path[reverseedge] (y2) edge[bend right=80] (x2);
+		\end{tikzpicture}}
+		\caption{Fully overlapping but reverse edges do not share nodes}
+		\label{Case4}
+	\end{figure} 
 \medskip
 \noindent
+
+In Case 4, Cycle 2 is strictly contained within Cycle 1. Hence, the two reverse edges don't share either the head node or the tail node with each other i.e.,
+\begin{equation}
+    x_1 < x_2 < y_2 < y_1,
+    \qquad \ell_1 > \ell_2.
+\end{equation}
+The  characteristics equation obtained for Case 4 in 2.57 is :
+\begin{equation}\label{eq:case4_theorem_statement}
+	s^{\ell_1+1} + 2s^{\ell_1} + s^{\ell_1-1} - s^{\ell_1-\ell_2} - s^{\ell_1-\ell_2-1} = 1.
+\tag{2.57}
+\end{equation}
 \textbf{Case 5: Fully nested cycles sharing a common tail}
+
+The case 5 is shown in Figure \ref{Case5}.
+\begin{figure}[H]
+		\centering
+		\scalebox{0.55}{\begin{tikzpicture}
+				\node[state] (root) {\Huge{$1$}};
+				\node[state] (x1) [right of=root] {\huge{$x_1$}};
+				\node[state] (x2) [right of=x1] {\huge{$x_2$}};
+				\node[state] (y1) [right of=x2] {\huge{$y_1$,$y_2$}};
+				\node[state] (N) [right of=y1] {\huge{N}};
+				\path [dotteddirected] (root) edge (x1);
+				\path [dotteddirected] (x1) edge (x2);
+				\path [dotteddirected] (x2) edge (y1);
+				\path [dotteddirected] (y1) edge (N);
+				\path[reverseedge] (y1) edge[bend right=90] (x1);
+				\path[reverseedge] (y1) edge[bend right=80] (x2);
+		\end{tikzpicture}}
+		\caption{Fully overlapping with shared tail node between the two reverse edges}
+		\label{Case5}
+	\end{figure}
+
 
 In Case 5, the two reverse edges share a common tail node, i.e.,
 \begin{equation}
@@ -169,24 +333,45 @@ Expanding the above expression gives
 \tag{2.60a}
 \end{equation}
 
-This is exactly the characteristic equation obtained for Case 4 in (2.57):
-\begin{equation}
-\begin{aligned}
-    s^{\ell_1+1}
-    +2s^{\ell_1}
-    +s^{\ell_1-1}
-    -s^{\ell_1-\ell_2}
-    -s^{\ell_1-\ell_2-1}
-    =1.
-\end{aligned}
-\tag{2.57}
-\end{equation}
+This is exactly the characteristic equation obtained for Case 4 in (2.57).
+%\begin{equation}
+%\begin{aligned}
+%    s^{\ell_1+1}
+%    +2s^{\ell_1}
+%    +s^{\ell_1-1}
+%    -s^{\ell_1-\ell_2}
+%    -s^{\ell_1-\ell_2-1}
+%    =1.
+%\end{aligned}
+%\tag{2.57}
+%\end{equation}
 
 Therefore, \textbf{Case 5 can be considered a special case of Case 4 from the perspective of the characteristic equation and the resulting spectral stability boundary}. A separate spectral derivation is not necessary for the in-degree Laplacian formulation considered in this thesis.
 
 \medskip
 \noindent
 \textbf{Case 6: Fully nested cycles sharing a common head}
+
+The case 6 is shown in Figure \ref{Case6}.
+
+\begin{figure}[H]
+		\centering
+		\scalebox{0.55}{\begin{tikzpicture}
+				\node[state] (root) {\Huge{$1$}};
+				\node[state] (x1) [right of=root] {\huge{$x_1$,$x_2$}};
+				\node[state] (y2) [right of=x1] {\huge{$y_2$}};
+				\node[state] (y1) [right of=y2] {\huge{$y_1$}};
+				\node[state] (N) [right of=y1] {\huge{N}};
+				\path [dotteddirected] (root) edge (x1);
+				\path [dotteddirected] (x1) edge (y2);
+				\path [dotteddirected] (y2) edge (y1);
+				\path [dotteddirected] (y1) edge (N);
+				\path[reverseedge] (y1) edge[bend right=90] (x1);
+				\path[reverseedge] (y2) edge[bend right=80] (x1);
+		\end{tikzpicture}}
+		\caption{Fully overlapping with shared head node between the two reverse edges}
+		\label{Case6}
+	\end{figure}
 
 In Case 6, the two reverse edges share a common head node, i.e.,
 \begin{equation}
@@ -238,11 +423,60 @@ for which the receiving (head) nodes determine the rows in which the additional 
 \response
 Thank you for pointing this out. The original Figure 3.5 was not drawn to the correct scale, which made the radius of the disc corresponding to $p_{\ell+1}$ appear inconsistent. As correctly noted, this disc should have a radius of $p_1$. 
 
-In the column Gershgorin construction associated with $\widetilde P$, the last column disc is centered at $p_{\ell+1}$ and has radius $p_1$, as stated immediately before (3.18). Its leftmost real-axis point is therefore $p_{\ell+1}-p_1$. For the numerical illustration in Figure 3.5, $p_1=12$, $\ell=5$, and the arithmetic-progression spacing is $d=2$. The last disc is consequently centered at $p_{\ell+1}=2p_1-\ell d=14$ and has radius $12$, so its left boundary is at $14-12=2=d$. The geometry is consistent with the analytical construction; the figure's scale/labels may not make the radius sufficiently apparent. I have altered Figure 3.5 to accurately reflect the prescribed disc radii and their geometric relationships.
+In the column Gershgorin construction associated with $\widetilde P$, based on Gershgorin's disc theorem \cite{horn2012matrix}, the last column disc is centered at $p_{\ell+1}$ and has radius $p_1$, as stated immediately before (3.18). Its leftmost real-axis point is therefore $p_{\ell+1}-p_1$. For the numerical illustration in Figure 3.5, $p_1=12$, $\ell=5$, and the arithmetic-progression spacing is $d=2$. The last disc is consequently centered at $p_{\ell+1}=2p_1-\ell d=14$ and has radius $12$, so its left boundary is at $14-12=2=d$. The geometry is consistent with the analytical construction; the figure's scale/labels may not make the radius sufficiently apparent. I have altered Figure 3.5 to accurately reflect the prescribed disc radii and their geometric relationships.
+Figure 3.5 is reproduced here as Figure~\ref{fig:GersgorinDiscInAP}.
+\begin{figure}[H]
+	\centering
+	\resizebox{0.75\textwidth}{!}{%
+	\begin{tikzpicture}[scale=0.3]
+		\draw[->, thick] (-1,0) -- (50,0) node[right] {$\mathfrak{Re}(z)$};
+		\draw[->, thick] (0,-20) -- (0,20) node[above] {$\mathfrak{Im}(z)$};
+        \foreach \x in {2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48}
+		\draw[-] (\x, -0.3) -- (\x, 0.3);
+		\draw[dashed, red, thick] (2,-14) -- (2,14) node[above] {$\mathfrak{Re}(z) = d$};
+		
+		\draw[draw=blue, thick] (14.0,0) circle (12cm);
+		\fill[blue] (14.0,0) circle (8pt) node[below] {$p_{\ell+1}$};
+		
+		\draw[draw=green, thick] (22,0) circle (20.0cm);
+		\fill[green] (22,0) circle (8pt) node[below] {$p_2$};
+		
+		\draw[draw=red, thick] (24.0,0) circle (22cm);
+		\fill[red] (24.0,0) circle (8pt) node[below] {$2p_1$};
+		
+		\draw[<->, thick, red] (0,0) -- (2,0) node[midway, above] {$\frac{p_1}{\ell+1}$};
+	\end{tikzpicture}
+}
+	\caption{Gershgorin column discs for $\tilde{P}$ when scaling parameters $p_i$ form an optimal Arithmetic Progression ($p_1 = 12, \ell = 5, d = 2$). All discs touch the boundary line $\mathfrak{Re}(z) = d$.}
+	\label{fig:GersgorinDiscInAP}
+\end{figure}
+
 
 \comment{Given the constraints set out in Problem 5.3, I would expect feasibility, or existence of solution, based on initial conditions, to be an issue. I wonder if these were explicitly established based on the constraints, taken together or individually.}
-\response{ \textcolor{red}{Again, repeating the relevant figures from your thesis here, so that the reader does not have to flip through pages of your thesis again, is a good idea. Do remember to refer to the added figures at relevant parts of the response.}
-Thank you for raising this important point. We agree that the feasibility of Problem 5.3 should be understood in terms of the simultaneous satisfaction of all four requirements: target interception, terminal impact-angle satisfaction, prescribed impact time, and actuator feasibility. These requirements are not independently feasible for arbitrary initial conditions and arbitrary prescribed impact times. The existence of a solution is established through the geometric trajectory constructions developed in Sections 5.3.3--5.3.6.
+
+\response
+
+Thank you for raising this important point. I agree that the feasibility of Problem 5.3(reproduced below with corresponding engagement geometry in Fig. \ref{fig:ch_DP_eng_geometry}) should be understood in terms of the simultaneous satisfaction of all four requirements: target interception, terminal impact-angle satisfaction, prescribed impact time, and actuator feasibility. 
+\begin{problem}[5.3]\label{prob:ch_DP_main_problem}
+	Given an interceptor's initial state vector $\mathbf{x}(0) = [x_M(0), y_M(0), \gamma_M(0)]^T = [0, 0, \gamma_M(0)]^T$, constant speed $V_M$, target initial location $(r_0, 0)$, and maximum lateral acceleration capability $a^{\max}$, synthesize a computationally efficient, singularity-free guidance law $a_M(t)$ such that the following conditions are met:
+	\begin{enumerate}
+		\item \textbf{Target Interception:} The interceptor reaches the target position at time $t = t_{\text{imp}}$, satisfying $r(t_{\text{imp}}) = 0$.
+		\item \textbf{Impact Angle Satisfaction:} The velocity vector aligns with the desired approach angle at interception: $\gamma_M(t_{\text{imp}}) = \theta_t$.
+		\item \textbf{Impact Time Satisfaction:} Interception occurs exactly at a designated feasible arrival time $t_{\text{imp}} = t^{\star}$.
+		\item \textbf{Actuator Feasibility:} The lateral acceleration input satisfies the strict bound $|a_M(t)| \le a^{\max}$ for all $t \in [0, t^{\star}]$.
+	\end{enumerate}
+\end{problem}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth, keepaspectratio]{5_Images/dubins_eng.eps}
+	\caption{Planar engagement geometry between an autonomous interceptor and a stationary target.}
+	\label{fig:ch_DP_eng_geometry}
+\end{figure}
+
+
+These requirements are not independently feasible for arbitrary initial conditions and arbitrary prescribed impact times. The existence of a solution is established through the geometric trajectory constructions developed in Sections 5.3.3--5.3.6.
 
 For a given initial configuration and desired terminal impact angle, the classical Dubins path provides the minimum feasible path length $P_{\min}$ and, consequently, the minimum achievable impact time:
 \[
@@ -283,7 +517,6 @@ can be matched by selecting a suitable mirrored-circle radius $r'_d$. The additi
 Thus, the existence of a solution is conditional on the joint geometric and actuator feasibility conditions of the selected path construction. The minimum Dubins path establishes the lower bound on achievable impact time, while the variable-radius and mirrored geometries provide the required flexibility to achieve the prescribed arrival time without violating the acceleration constraint. The thesis therefore does not claim feasibility for arbitrary combinations of initial conditions, terminal impact angles, and arrival times.
 
 We acknowledge that these feasibility conditions can be stated more explicitly in the formal problem formulation. Accordingly, we will strengthen the discussion immediately following Problem 5.3 to clarify that feasibility is conditional on (i) the existence of a geometrically valid path for the selected TCT/DCT configuration, (ii) satisfaction of the minimum-turn-radius constraint, and (iii) the prescribed impact time lying within the attainable time interval of the selected geometric branch.
-}
 
 \vspace{10pt}
 \hrule
@@ -296,5 +529,17 @@ Sincerely,\\[18pt]
 Roll No. 184076010\\
 Department of Electrical Engineering\\
 Indian Institute of Technology Bombay
+
+\clearpage
+\begin{thebibliography}{99}
+	\bibitem{horn2012matrix}
+	R. A. Horn and C. R. Johnson,
+	\textit{Matrix Analysis},
+	2nd ed., Cambridge University Press, Cambridge, 2012.
+	\bibitem{harville1997}
+	D. A. Harville,
+	\textit{Matrix Algebra From a Statistician's Perspective},
+	Springer-Verlag, New York, 1997.
+\end{thebibliography}
 
 \end{document}
